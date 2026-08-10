@@ -1,0 +1,613 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexFarm | Connected Livestock Solutions</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="WhatsApp Image 2026-08-10 at 12.20.58 (1).jpeg" type="image/jpeg">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Three.js for 3D Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Tailwind Configuration for Custom Brand Colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        nexGreen: '#7CB342', // Approximate from logo
+                        nexBlue: '#00BCD4',  // Approximate from logo
+                        nexDark: '#0B1120',  // Deep dark tech background
+                        nexCard: 'rgba(255, 255, 255, 0.05)',
+                    },
+                    backgroundImage: {
+                        'gradient-brand': 'linear-gradient(to right, #7CB342, #00BCD4)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0B1120;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* 3D Canvas positioning */
+        #webgl-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        /* Glassmorphism utilities */
+        .glass-nav {
+            background: rgba(11, 17, 32, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card {
+            background: var(--tw-colors-nexCard);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            transform-style: preserve-3d;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0B1120;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #7CB342, #00BCD4);
+            border-radius: 4px;
+        }
+
+        /* Text Gradient Utility */
+        .text-gradient {
+            background: linear-gradient(to right, #7CB342, #00BCD4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Glow effect for active elements */
+        .glow-effect:hover {
+            box-shadow: 0 0 20px rgba(0, 188, 212, 0.4);
+        }
+
+        /* Product Image Placeholder Styling */
+        .img-placeholder {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, rgba(124, 179, 66, 0.2), rgba(0, 188, 212, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-nexBlue selection:text-white">
+
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between py-3 md:py-4">
+                <!-- Logo Area -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer transition-transform duration-300 hover:scale-105" onclick="window.scrollTo(0,0)">
+                    <!-- Logo Image -->
+                    <div class="flex items-center bg-white px-3 py-2 rounded-xl shadow-[0_0_15px_rgba(0,188,212,0.2)]">
+                        <img src="WhatsApp Image 2026-08-10 at 12.20.58 (1).jpeg" alt="NexFarm Logo" class="h-12 md:h-16 w-auto object-contain">
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#solucoes" class="text-gray-300 hover:text-white hover:text-gradient transition-colors px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wider">Soluções</a>
+                        <a href="#tecnologia" class="text-gray-300 hover:text-white hover:text-gradient transition-colors px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wider">Tecnologia</a>
+                        <a href="#produtos" class="text-gray-300 hover:text-white hover:text-gradient transition-colors px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wider">Produtos</a>
+                        <a href="#contato" class="bg-gradient-brand text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg hover:shadow-cyan-500/50 transition-all transform hover:-translate-y-0.5">Fale Conosco</a>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 focus:outline-none" aria-controls="mobile-menu" aria-expanded="false" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div class="md:hidden hidden bg-nexDark border-t border-gray-800" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#solucoes" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Soluções</a>
+                <a href="#tecnologia" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Tecnologia</a>
+                <a href="#produtos" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Produtos</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20" id="home">
+        <!-- 3D Canvas Container -->
+        <div id="webgl-container"></div>
+
+        <!-- Gradient overlay to ensure text readability -->
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-nexDark/50 to-nexDark z-0"></div>
+
+        <div class="relative z-10 text-center px-4 max-w-5xl mx-auto mt-10 sm:mt-0">
+            <div class="inline-block mb-4 px-4 py-1 rounded-full border border-nexGreen/30 bg-nexGreen/10 backdrop-blur-sm">
+                <span class="text-nexGreen font-semibold text-sm tracking-wide uppercase"><i class="fas fa-satellite-dish mr-2"></i>Connected Livestock Solutions</span>
+            </div>
+            <h1 class="text-5xl sm:text-7xl md:text-8xl font-black text-white leading-tight mb-6 tracking-tight drop-shadow-2xl">
+                INTELIGÊNCIA PARA <br>
+                O <span class="text-gradient">CAMPO</span>
+            </h1>
+            <p class="mt-4 text-xl sm:text-2xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed mb-10">
+                Revolucione sua granja com dados em tempo real. Soluções completas de Hardware, Web, App e Cloud para suinocultura e avicultura.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#produtos" class="bg-gradient-brand text-white px-8 py-4 rounded-full text-lg font-bold shadow-[0_0_20px_rgba(0,188,212,0.4)] hover:shadow-[0_0_30px_rgba(124,179,66,0.6)] transition-all transform hover:scale-105">
+                    Explorar Catálogo
+                </a>
+                <a href="#tecnologia" class="bg-transparent border border-gray-500 text-white hover:border-nexBlue hover:text-nexBlue px-8 py-4 rounded-full text-lg font-bold transition-all">
+                    Conhecer Tecnologia
+                </a>
+            </div>
+        </div>
+
+        <!-- Scroll Down Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce z-10">
+            <a href="#solucoes" class="text-gray-400 hover:text-white">
+                <i class="fas fa-chevron-down text-3xl drop-shadow-lg"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Technology Highlights Section -->
+    <section id="tecnologia" class="py-24 bg-nexDark relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-5xl font-bold mb-4">Tecnologia de <span class="text-gradient">Ponta a Ponta</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto text-lg">Integração total do hardware no galpão até a análise de dados na nuvem.</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="p-6 rounded-2xl glass-card glow-effect group cursor-default">
+                    <div class="w-16 h-16 mx-auto bg-nexGreen/20 rounded-full flex items-center justify-center mb-4 group-hover:bg-nexGreen/40 transition-colors duration-300">
+                        <i class="fas fa-microchip text-3xl text-nexGreen"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Hardware</h3>
+                    <p class="text-sm text-gray-400">Equipamentos robustos e precisos para o ambiente de granja.</p>
+                </div>
+                <div class="p-6 rounded-2xl glass-card glow-effect group cursor-default">
+                    <div class="w-16 h-16 mx-auto bg-nexBlue/20 rounded-full flex items-center justify-center mb-4 group-hover:bg-nexBlue/40 transition-colors duration-300">
+                        <i class="fas fa-wifi text-3xl text-nexBlue"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">IoT & M2M</h3>
+                    <p class="text-sm text-gray-400">Conectividade constante, transmitindo dados em tempo real.</p>
+                </div>
+                <div class="p-6 rounded-2xl glass-card glow-effect group cursor-default">
+                    <div class="w-16 h-16 mx-auto bg-nexGreen/20 rounded-full flex items-center justify-center mb-4 group-hover:bg-nexGreen/40 transition-colors duration-300">
+                        <i class="fas fa-cloud text-3xl text-nexGreen"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Cloud Server</h3>
+                    <p class="text-sm text-gray-400">Processamento seguro e escalável na nuvem.</p>
+                </div>
+                <div class="p-6 rounded-2xl glass-card glow-effect group cursor-default">
+                    <div class="w-16 h-16 mx-auto bg-nexBlue/20 rounded-full flex items-center justify-center mb-4 group-hover:bg-nexBlue/40 transition-colors duration-300">
+                        <i class="fas fa-mobile-screen-button text-3xl text-nexBlue"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Web & App</h3>
+                    <p class="text-sm text-gray-400">Gestão na palma da mão, onde você estiver.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="produtos" class="py-24 relative z-10 bg-[#080d19]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20 flex flex-col items-center">
+                <span class="text-nexBlue font-semibold tracking-wider uppercase mb-2">Catálogo</span>
+                <h2 class="text-4xl sm:text-6xl font-black mb-6">Nossas <span class="text-gradient">Soluções</span></h2>
+                <div class="w-24 h-1 bg-gradient-brand rounded-full"></div>
+            </div>
+
+            <!-- Dynamic Product Grid -->
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 perspective-1000">
+                <!-- Products will be injected here via JavaScript to keep HTML clean -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action / Footer -->
+    <footer class="bg-black pt-20 pb-10 border-t border-gray-800 relative overflow-hidden">
+        <!-- Abstract background shape -->
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-brand"></div>
+        <div class="absolute -top-[200px] -right-[200px] w-[500px] h-[500px] rounded-full bg-nexBlue/5 blur-[100px] pointer-events-none"></div>
+        <div class="absolute -bottom-[200px] -left-[200px] w-[500px] h-[500px] rounded-full bg-nexGreen/5 blur-[100px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center mb-6 bg-white inline-block px-4 py-3 rounded-2xl shadow-[0_0_20px_rgba(124,179,66,0.15)] max-w-fit">
+                        <img src="WhatsApp Image 2026-08-10 at 12.20.58 (1).jpeg" alt="NexFarm Logo" class="h-16 md:h-24 w-auto object-contain">
+                    </div>
+                    <p class="text-gray-400 mb-6 max-w-md mt-4">
+                        Transformando a pecuária através de tecnologia, conectividade e dados precisos. Soluções de alta performance para o produtor moderno.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-nexGreen hover:text-white transition-all"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-nexBlue hover:text-white transition-all"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-gradient-brand hover:text-white transition-all"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Links Rápidos</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-nexGreen transition-colors">Início</a></li>
+                        <li><a href="#tecnologia" class="text-gray-400 hover:text-nexGreen transition-colors">Tecnologia Cloud</a></li>
+                        <li><a href="#produtos" class="text-gray-400 hover:text-nexGreen transition-colors">Catálogo de Produtos</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-nexGreen transition-colors">Suporte Técnico</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Contato</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start text-gray-400">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-nexBlue"></i>
+                            <span>Passo Fundo, RS<br>Brasil</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-envelope mr-3 text-nexBlue"></i>
+                            <a href="mailto:contato@nexfarm.com.br" class="hover:text-white transition-colors">contato@nexfarm.com.br</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm">
+                    &copy; 2026 NexFarm Connected Livestock Solutions. Todos os direitos reservados.
+                </p>
+                <p class="text-gray-600 text-sm mt-2 md:mt-0">
+                    Parceira tecnológica: Raizon & Automasensor
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts Section -->
+    <script>
+        // Three.js Background Animation (IoT Network concept)
+        const initThreeJS = () => {
+            const container = document.getElementById('webgl-container');
+            if (!container) return;
+
+            const scene = new THREE.Scene();
+
+            // Camera setup
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 100;
+
+            // Renderer setup
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Create particles (nodes)
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 300; // Number of IoT nodes
+            const posArray = new Float32Array(particlesCount * 3);
+
+            // Randomly position particles within a sphere-like volume
+            for (let i = 0; i < particlesCount * 3; i++) {
+                // Range -100 to 100
+                posArray[i] = (Math.random() - 0.5) * 200;
+            }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            // Material for particles - NexFarm Blue
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.8,
+                color: '#00BCD4',
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
+
+            // Create lines connecting close particles (simulating network)
+            // For performance, we use a simpler approach in this demo, just adding some abstract floating rings
+
+            const group = new THREE.Group();
+            scene.add(group);
+            group.add(particlesMesh);
+
+            // Add a subtle glowing ring (NexFarm Green)
+            const ringGeo = new THREE.RingGeometry(40, 40.5, 64);
+            const ringMat = new THREE.MeshBasicMaterial({
+                color: '#7CB342',
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.3
+            });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            group.add(ring);
+
+            const ring2 = new THREE.Mesh(new THREE.RingGeometry(60, 60.5, 64), new THREE.MeshBasicMaterial({ color: '#00BCD4', side: THREE.DoubleSide, transparent: true, opacity: 0.2 }));
+            ring2.rotation.y = Math.PI / 3;
+            group.add(ring2);
+
+            // Mouse interaction
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetX = 0;
+            let targetY = 0;
+
+            const windowHalfX = window.innerWidth / 2;
+            const windowHalfY = window.innerHeight / 2;
+
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX - windowHalfX);
+                mouseY = (event.clientY - windowHalfY);
+            });
+
+            // Handle Resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // Animation Loop
+            const clock = new THREE.Clock();
+
+            const animate = () => {
+                requestAnimationFrame(animate);
+                const elapsedTime = clock.getElapsedTime();
+
+                targetX = mouseX * 0.001;
+                targetY = mouseY * 0.001;
+
+                // Smooth rotation based on mouse
+                group.rotation.y += 0.05 * (targetX - group.rotation.y);
+                group.rotation.x += 0.05 * (targetY - group.rotation.x);
+
+                // Constant slow rotation
+                group.rotation.z += 0.001;
+                particlesMesh.rotation.y = elapsedTime * 0.05;
+
+                renderer.render(scene, camera);
+            };
+
+            animate();
+        };
+
+        // Product Data Array based on provided images
+        const products = [
+            {
+                id: 1,
+                title: "Dosadores Automáticos",
+                subtitle: "de Ração",
+                description: "Programe, dose e monitore a ração nos cochos. Digital, Automático, Resistente, Atóxico, 40L.",
+                image: "WhatsApp Image 2026-08-10 at 12.20.58.jpeg",
+                color: "green",
+                tags: ["IoT", "Cloud", "M2M"]
+            },
+            {
+                id: 2,
+                title: "FlowScale - Corredor",
+                subtitle: "Balança para Suínos",
+                description: "Pese seus animais de forma automática. Balança de corredor para dados em tempo real.",
+                image: "WhatsApp Image 2026-08-10 at 12.20.57 (3).jpg",
+                color: "blue",
+                tags: ["IoT", "Cloud", "M2M"]
+            },
+            {
+                id: 3,
+                title: "FlowScale - Coletiva/Indiv",
+                subtitle: "Balança para Suínos",
+                description: "Pesagem coletiva ou por indivíduo. Acompanhe a curva de ganho de peso em tempo real.",
+                image: "WhatsApp Image 2026-08-10 at 12.20.57 (2).jpg",
+                color: "green",
+                tags: ["IoT", "Cloud", "M2M"]
+            },
+            {
+                id: 4,
+                title: "Balanças para Leitões",
+                subtitle: "Pesagem Prática",
+                description: "Pese seus leitões de forma prática. Ideal para fases iniciais, creche e crescimento.",
+                image: "WhatsApp Image 2026-08-10 at 12.20.57 (1).jpeg",
+                color: "blue",
+                tags: ["IoT", "Cloud", "M2M"]
+            },
+            {
+                id: 5,
+                title: "Plataforma Pêndulo",
+                subtitle: "Aves de Corte",
+                description: "Monitore o peso de suas aves de corte em tempo real. Melhora nutrição e ambiência.",
+                image: "WhatsApp Image 2026-08-10 at 12.20.57.jpg",
+                color: "green",
+                tags: ["IoT", "Cloud", "M2M"]
+            },
+            {
+                id: 6,
+                title: "Balanças Puleiro",
+                subtitle: "Aves de Postura",
+                description: "Monitore o peso de suas aves de postura em tempo real com estrutura adaptada.",
+                image: "WhatsApp Image 2026-08-10 at 12.20.56 (2).jpg",
+                color: "blue",
+                tags: ["IoT", "Cloud", "M2M"]
+            },
+            {
+                id: 7,
+                title: "Balanças para Silos",
+                subtitle: "Monitoramento de Estoque",
+                description: "Monitore até 4 silos com uma única balança. Indicador digital preciso do nível.",
+                image: "WhatsApp Image 2026-08-10 at 12.20.56 (1).jpg",
+                color: "green",
+                tags: ["IoT", "Cloud", "M2M"]
+            },
+            {
+                id: 8,
+                title: "Fluxômetro",
+                subtitle: "Medidores de Água",
+                description: "Monitore em tempo real o consumo de água. Digital, Preciso, Compatível.",
+                image: "WhatsApp Image 2026-08-10 at 12.20.56.jpg",
+                color: "blue",
+                tags: ["IoT", "Cloud", "M2M"]
+            }
+        ];
+
+        // Render Products
+        const renderProducts = () => {
+            const grid = document.getElementById('product-grid');
+
+            products.forEach((product) => {
+                const badgeColor = product.color === 'green' ? 'bg-nexGreen text-black' : 'bg-nexBlue text-black';
+                const iconColor = product.color === 'green' ? 'text-nexGreen' : 'text-nexBlue';
+
+                const cardHtml = `
+                        <div class="glass-card rounded-2xl overflow-hidden group 3d-tilt cursor-pointer relative h-full flex flex-col">
+                            <!-- Product Image Area -->
+                            <div class="relative w-full h-64 overflow-hidden border-b border-white/10">
+                                <img src="${product.image}" alt="${product.title}" class="absolute inset-0 w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100">
+
+                                <!-- Gradient overlay for better text/icon visibility -->
+                                <div class="absolute inset-0 bg-gradient-to-t from-nexDark/90 via-nexDark/20 to-transparent z-10 pointer-events-none"></div>
+
+                                <!-- Hardware icons overlay as seen in flyers -->
+                                <div class="absolute bottom-4 right-4 flex space-x-2 z-20">
+                                    <i class="fas fa-weight-hanging text-white/70 text-xs shadow-sm"></i>
+                                    <i class="fas fa-droplet text-white/70 text-xs shadow-sm"></i>
+                                    <i class="fas fa-bell-concierge text-white/70 text-xs shadow-sm"></i>
+                                    <i class="fas fa-temperature-half text-white/70 text-xs shadow-sm"></i>
+                                    <i class="fas fa-heart-pulse text-white/70 text-xs shadow-sm"></i>
+                                </div>
+                            </div>
+
+                            <div class="p-6 flex-grow flex flex-col justify-between z-20 relative">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:${iconColor} transition-colors">${product.title}</h3>
+                                    <h4 class="text-lg text-${product.color === 'green' ? 'nexGreen' : 'nexBlue'} font-medium mb-4">${product.subtitle}</h4>
+                                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                                        ${product.description}
+                                    </p>
+                                </div>
+
+                                <div class="flex items-center justify-between border-t border-white/10 pt-4 mt-auto">
+                                    <div class="flex space-x-2">
+                                        ${product.tags.map(tag => `<span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded bg-white/5 text-gray-300 border border-white/10">${tag}</span>`).join('')}
+                                    </div>
+                                    <i class="fas fa-arrow-right text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all"></i>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                grid.innerHTML += cardHtml;
+            });
+
+            // Initialize 3D Tilt effect after rendering
+            initTiltEffect();
+        };
+
+        // 3D Tilt Effect for Cards
+        const initTiltEffect = () => {
+            const cards = document.querySelectorAll('.3d-tilt');
+
+            cards.forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left; // x position within the element.
+                    const y = e.clientY - rect.top;  // y position within the element.
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = ((y - centerY) / centerY) * -10; // Max rotation 10deg
+                    const rotateY = ((x - centerX) / centerX) * 10;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+
+                    // Add dynamic lighting/glare
+                    card.style.boxShadow = `
+                            ${-rotateY}px ${rotateX}px 20px rgba(0, 0, 0, 0.4),
+                            0 0 20px rgba(${rotateY > 0 ? '0,188,212' : '124,179,66'}, 0.2)
+                        `;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                    card.style.boxShadow = 'none';
+                });
+            });
+        };
+
+        // Mobile Menu Toggle
+        const toggleMobileMenu = () => {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        };
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg', 'bg-nexDark/90');
+                nav.classList.remove('glass-nav');
+            } else {
+                nav.classList.remove('shadow-lg', 'bg-nexDark/90');
+                nav.classList.add('glass-nav');
+            }
+        });
+
+        // Initialize everything on load
+        window.onload = () => {
+            initThreeJS();
+            renderProducts();
+        };
+    </script>
+</body>
+</html>
