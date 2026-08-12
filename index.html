@@ -17,9 +17,6 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Three.js (Carregamento diferido e seguro) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
     <!-- Tailwind Configuração da Marca -->
     <script>
         tailwind.config = {
@@ -32,7 +29,8 @@
                         nexGreen: '#7CB342',
                         nexBlue: '#00BCD4',
                         nexDark: '#0B1120',
-                        nexDarker: '#060A12',
+                        nexLight: '#F4F7F9', /* Novo tom de fundo claro e sofisticado */
+                        nexWhite: '#FFFFFF',
                     },
                     backgroundImage: {
                         'gradient-brand': 'linear-gradient(to right, #7CB342, #00BCD4)',
@@ -45,11 +43,11 @@
     <!-- Estilos CSS Puros e Otimizados -->
     <style>
         body {
-            background-color: #0B1120;
-            color: #ffffff;
+            background-color: #F4F7F9; /* Fundo claro por padrão */
+            color: #0B1120; /* Texto escuro por padrão */
             overflow-x: hidden;
-            width: 100%; /* Força restrição de largura no mobile */
-            max-width: 100vw; /* Impede vazamento lateral de elementos */
+            width: 100%;
+            max-width: 100vw;
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
         }
@@ -59,7 +57,7 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #0B1120;
+            background: #F4F7F9;
         }
 
         ::-webkit-scrollbar-thumb {
@@ -75,11 +73,12 @@
             color: transparent;
         }
 
+        /* Nav clara estilo vidro */
         .glass-nav {
-            background: rgba(11, 17, 32, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .dropdown-menu {
@@ -93,17 +92,6 @@
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
-        }
-
-        #webgl-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
         }
 
         .flip-container {
@@ -142,12 +130,11 @@
 
         .product-img {
             will-change: transform;
-            /* Filter blur is heavy, drop-shadow is better for shapes */
-            filter: drop-shadow(0 25px 25px rgba(0,0,0,0.7));
-            transition: transform 0.1s linear; /* Smoothing for JS Lerp */
+            filter: drop-shadow(0 25px 25px rgba(0,0,0,0.3)); /* Sombra mais suave para fundo claro */
+            transition: transform 0.1s linear;
         }
 
-        /* Idle floating animation (0% CPU, purely GPU accelerated) */
+        /* Efeitos de flutuação ajustados para sombra em fundo claro */
         @keyframes float-idle {
             0%, 100% {
                 transform: translateY(0px) translateZ(10px);
@@ -161,18 +148,18 @@
         @keyframes shadow-breathe {
             0%, 100% {
                 transform: scale(1);
-                opacity: 0.5;
+                opacity: 0.15;
             }
 
             50% {
                 transform: scale(0.8);
-                opacity: 0.3;
+                opacity: 0.08;
             }
         }
 
         .is-idle .product-img {
             animation: float-idle 5s ease-in-out infinite;
-            transition: transform 0.5s ease-out; /* Smooth return to idle */
+            transition: transform 0.5s ease-out;
         }
 
         .is-idle .product-shadow {
@@ -191,79 +178,91 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+
+        /* Efeito Cinematográfico (Ken Burns) */
+        @keyframes hero-pan {
+            0% {
+                transform: scale(1) translate(0, 0);
+            }
+
+            50% {
+                transform: scale(1.08) translate(-1%, 1%);
+            }
+
+            100% {
+                transform: scale(1) translate(0, 0);
+            }
+        }
+
+        .animate-hero-pan {
+            animation: hero-pan 30s ease-in-out infinite;
+            will-change: transform;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-nexBlue selection:text-white">
 
+    <!-- NAVIGATION HEADER (CLARO) -->
     <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between py-3 md:py-4">
-
-                <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center cursor-pointer transition-transform duration-300 hover:scale-105" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                    <div class="flex items-center bg-white px-3 py-2 rounded-xl shadow-[0_0_20px_rgba(0,188,212,0.25)] relative overflow-hidden group">
-                        <div class="absolute inset-0 bg-gradient-brand opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-                        <img src="Images/logo_transparente.png" alt="NexFarm Logo" class="h-10 sm:h-12 md:h-16 w-auto object-contain relative z-10" decoding="async">
-                    </div>
-                </div>
+            <!-- Menu Centralizado, sem logo no cabeçalho -->
+            <div class="flex items-center justify-center py-4 relative">
 
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="text-gray-300 hover:text-white transition-colors text-sm font-medium uppercase tracking-wider">Início</a>
-                    <a href="#tecnologia" class="text-gray-300 hover:text-white transition-colors text-sm font-medium uppercase tracking-wider">Tecnologia</a>
-                    <a href="#plataforma" class="text-gray-300 hover:text-white transition-colors text-sm font-medium uppercase tracking-wider">Plataforma</a>
+                <div class="hidden md:flex items-center space-x-10">
+                    <a href="#home" class="text-gray-700 hover:text-nexBlue transition-colors text-sm font-bold uppercase tracking-wider">Início</a>
+                    <a href="#tecnologia" class="text-gray-700 hover:text-nexBlue transition-colors text-sm font-bold uppercase tracking-wider">Tecnologia</a>
+                    <a href="#plataforma" class="text-gray-700 hover:text-nexBlue transition-colors text-sm font-bold uppercase tracking-wider">Plataforma</a>
 
                     <!-- Soluções Dropdown -->
                     <div class="relative dropdown-wrapper py-2">
-                        <button class="text-gray-300 hover:text-white flex items-center space-x-2 text-sm font-medium uppercase tracking-wider transition-colors focus:outline-none">
+                        <button class="text-gray-700 hover:text-nexBlue flex items-center space-x-2 text-sm font-bold uppercase tracking-wider transition-colors focus:outline-none">
                             <span>Soluções</span>
                             <i class="fas fa-chevron-down text-xs transition-transform duration-300 group-hover:rotate-180"></i>
                         </button>
 
-                        <div class="dropdown-menu absolute left-1/2 -translate-x-1/2 mt-3 w-72 rounded-2xl bg-nexDark/95 border border-white/10 shadow-2xl p-2 z-50 backdrop-blur-md">
-                            <!-- Green Theme Item -->
-                            <a href="#prod-dosadores" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-white/5 transition-colors group">
-                                <div class="w-8 h-8 rounded-lg bg-nexGreen/20 flex items-center justify-center group-hover:bg-nexGreen text-nexGreen group-hover:text-black transition-colors">
+                        <div class="dropdown-menu absolute left-1/2 -translate-x-1/2 mt-3 w-72 rounded-2xl bg-white border border-gray-100 shadow-xl p-2 z-50">
+                            <a href="#prod-dosadores" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group">
+                                <div class="w-8 h-8 rounded-lg bg-nexGreen/10 flex items-center justify-center group-hover:bg-nexGreen text-nexGreen group-hover:text-white transition-colors">
                                     <i class="fas fa-box-open text-xs"></i>
                                 </div>
-                                <span class="text-sm font-medium text-gray-200 group-hover:text-white">Dosadores Automáticos</span>
+                                <span class="text-sm font-semibold text-gray-700 group-hover:text-nexDark">Dosadores Automáticos</span>
                             </a>
-                            <!-- Blue Theme Item -->
-                            <a href="#prod-flowscale-corredor" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-white/5 transition-colors group">
-                                <div class="w-8 h-8 rounded-lg bg-nexBlue/20 flex items-center justify-center group-hover:bg-nexBlue text-nexBlue group-hover:text-black transition-colors">
+                            <a href="#prod-flowscale-corredor" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group">
+                                <div class="w-8 h-8 rounded-lg bg-nexBlue/10 flex items-center justify-center group-hover:bg-nexBlue text-nexBlue group-hover:text-white transition-colors">
                                     <i class="fas fa-weight-hanging text-xs"></i>
                                 </div>
-                                <span class="text-sm font-medium text-gray-200 group-hover:text-white">FlowScale Corredor</span>
+                                <span class="text-sm font-semibold text-gray-700 group-hover:text-nexDark">FlowScale Corredor</span>
                             </a>
-                            <a href="#prod-flowscale-coletiva" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-white/5 transition-colors group">
-                                <div class="w-8 h-8 rounded-lg bg-nexGreen/20 flex items-center justify-center group-hover:bg-nexGreen text-nexGreen group-hover:text-black transition-colors">
+                            <a href="#prod-flowscale-coletiva" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group">
+                                <div class="w-8 h-8 rounded-lg bg-nexGreen/10 flex items-center justify-center group-hover:bg-nexGreen text-nexGreen group-hover:text-white transition-colors">
                                     <i class="fas fa-sliders text-xs"></i>
                                 </div>
-                                <span class="text-sm font-medium text-gray-200 group-hover:text-white">FlowScale Coletiva/Indiv.</span>
+                                <span class="text-sm font-semibold text-gray-700 group-hover:text-nexDark">FlowScale Coletiva/Indiv.</span>
                             </a>
-                            <a href="#prod-leitoes" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-white/5 transition-colors group">
-                                <div class="w-8 h-8 rounded-lg bg-nexBlue/20 flex items-center justify-center group-hover:bg-nexBlue text-nexBlue group-hover:text-black transition-colors">
+                            <a href="#prod-leitoes" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group">
+                                <div class="w-8 h-8 rounded-lg bg-nexBlue/10 flex items-center justify-center group-hover:bg-nexBlue text-nexBlue group-hover:text-white transition-colors">
                                     <i class="fas fa-piggy-bank text-xs"></i>
                                 </div>
-                                <span class="text-sm font-medium text-gray-200 group-hover:text-white">Balanças para Leitões</span>
+                                <span class="text-sm font-semibold text-gray-700 group-hover:text-nexDark">Balanças para Leitões</span>
                             </a>
-                            <a href="#prod-pendulo" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-white/5 transition-colors group">
-                                <div class="w-8 h-8 rounded-lg bg-nexGreen/20 flex items-center justify-center group-hover:bg-nexGreen text-nexGreen group-hover:text-black transition-colors">
+                            <a href="#prod-pendulo" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group">
+                                <div class="w-8 h-8 rounded-lg bg-nexGreen/10 flex items-center justify-center group-hover:bg-nexGreen text-nexGreen group-hover:text-white transition-colors">
                                     <i class="fas fa-feather text-xs"></i>
                                 </div>
-                                <span class="text-sm font-medium text-gray-200 group-hover:text-white">Plataforma Pêndulo</span>
+                                <span class="text-sm font-semibold text-gray-700 group-hover:text-nexDark">Plataforma Pêndulo</span>
                             </a>
-                            <a href="#prod-silos" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-white/5 transition-colors group">
-                                <div class="w-8 h-8 rounded-lg bg-nexGreen/20 flex items-center justify-center group-hover:bg-nexGreen text-nexGreen group-hover:text-black transition-colors">
+                            <a href="#prod-silos" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group">
+                                <div class="w-8 h-8 rounded-lg bg-nexGreen/10 flex items-center justify-center group-hover:bg-nexGreen text-nexGreen group-hover:text-white transition-colors">
                                     <i class="fas fa-warehouse text-xs"></i>
                                 </div>
-                                <span class="text-sm font-medium text-gray-200 group-hover:text-white">Balanças para Silos</span>
+                                <span class="text-sm font-semibold text-gray-700 group-hover:text-nexDark">Balanças para Silos</span>
                             </a>
-                            <a href="#prod-fluxometro" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-white/5 transition-colors group">
-                                <div class="w-8 h-8 rounded-lg bg-nexBlue/20 flex items-center justify-center group-hover:bg-nexBlue text-nexBlue group-hover:text-black transition-colors">
+                            <a href="#prod-fluxometro" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group">
+                                <div class="w-8 h-8 rounded-lg bg-nexBlue/10 flex items-center justify-center group-hover:bg-nexBlue text-nexBlue group-hover:text-white transition-colors">
                                     <i class="fas fa-droplet text-xs"></i>
                                 </div>
-                                <span class="text-sm font-medium text-gray-200 group-hover:text-white">Fluxômetro Digital</span>
+                                <span class="text-sm font-semibold text-gray-700 group-hover:text-nexDark">Fluxômetro Digital</span>
                             </a>
                         </div>
                     </div>
@@ -271,9 +270,9 @@
                     <a href="#contato" class="bg-gradient-brand text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg hover:shadow-cyan-500/40 transition-all transform hover:-translate-y-0.5">Fale Conosco</a>
                 </div>
 
-                <!-- Mobile Menu Toggle Button -->
-                <div class="-mr-2 flex md:hidden">
-                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-white hover:bg-white/10 focus:outline-none" onclick="toggleMobileMenu()">
+                <!-- Mobile Menu Toggle Button (Direita) -->
+                <div class="flex md:hidden absolute right-4">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-nexBlue focus:outline-none" onclick="toggleMobileMenu()">
                         <i class="fas fa-bars text-2xl"></i>
                     </button>
                 </div>
@@ -281,146 +280,189 @@
         </div>
 
         <!-- Mobile Accordion Menu -->
-        <div class="md:hidden hidden bg-nexDark/95 border-t border-white/10 backdrop-blur-lg" id="mobile-menu">
+        <div class="md:hidden hidden bg-white/95 border-b border-gray-100 backdrop-blur-lg absolute w-full shadow-xl" id="mobile-menu">
             <div class="px-4 pt-3 pb-6 space-y-2">
-                <a href="#home" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Início</a>
-                <a href="#tecnologia" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Tecnologia</a>
-                <a href="#plataforma" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Plataforma Cloud</a>
+                <a href="#home" onclick="toggleMobileMenu()" class="text-gray-800 font-semibold hover:text-nexBlue block px-3 py-2 rounded-md text-base">Início</a>
+                <a href="#tecnologia" onclick="toggleMobileMenu()" class="text-gray-800 font-semibold hover:text-nexBlue block px-3 py-2 rounded-md text-base">Tecnologia</a>
+                <a href="#plataforma" onclick="toggleMobileMenu()" class="text-gray-800 font-semibold hover:text-nexBlue block px-3 py-2 rounded-md text-base">Plataforma Cloud</a>
 
                 <div>
-                    <button onclick="toggleMobileDropdown()" class="w-full text-left text-gray-300 hover:text-white flex justify-between items-center px-3 py-2 text-base font-medium">
+                    <button onclick="toggleMobileDropdown()" class="w-full text-left text-gray-800 font-semibold hover:text-nexBlue flex justify-between items-center px-3 py-2 text-base">
                         <span>Soluções / Produtos</span>
                         <i class="fas fa-chevron-down text-xs transition-transform" id="mobile-arrow"></i>
                     </button>
                     <div class="hidden pl-4 space-y-1 mt-1 border-l-2 border-nexGreen/30" id="mobile-solucoes">
-                        <a href="#prod-dosadores" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-400 hover:text-white">Dosadores Automáticos</a>
-                        <a href="#prod-flowscale-corredor" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-400 hover:text-white">FlowScale Corredor</a>
-                        <a href="#prod-flowscale-coletiva" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-400 hover:text-white">FlowScale Coletiva/Indiv.</a>
-                        <a href="#prod-leitoes" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-400 hover:text-white">Balanças para Leitões</a>
-                        <a href="#prod-pendulo" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-400 hover:text-white">Plataforma Pêndulo</a>
-                        <a href="#prod-silos" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-400 hover:text-white">Balanças para Silos</a>
-                        <a href="#prod-fluxometro" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-400 hover:text-white">Fluxômetro Digital</a>
+                        <a href="#prod-dosadores" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-600 hover:text-nexDark">Dosadores Automáticos</a>
+                        <a href="#prod-flowscale-corredor" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-600 hover:text-nexDark">FlowScale Corredor</a>
+                        <a href="#prod-flowscale-coletiva" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-600 hover:text-nexDark">FlowScale Coletiva/Indiv.</a>
+                        <a href="#prod-leitoes" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-600 hover:text-nexDark">Balanças para Leitões</a>
+                        <a href="#prod-pendulo" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-600 hover:text-nexDark">Plataforma Pêndulo</a>
+                        <a href="#prod-silos" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-600 hover:text-nexDark">Balanças para Silos</a>
+                        <a href="#prod-fluxometro" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-gray-600 hover:text-nexDark">Fluxômetro Digital</a>
                     </div>
                 </div>
 
-                <a href="#contato" onclick="toggleMobileMenu()" class="bg-gradient-brand text-white block text-center px-4 py-3 rounded-full text-base font-bold mt-4">Fale Conosco</a>
+                <a href="#contato" onclick="toggleMobileMenu()" class="bg-gradient-brand text-white block text-center px-4 py-3 rounded-full text-base font-bold mt-4 shadow-md">Fale Conosco</a>
             </div>
         </div>
     </nav>
 
-    <section class="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden" id="home">
-        <!-- Safely wrapped WebGL container -->
-        <div id="webgl-container"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-nexDark/60 to-nexDark z-0 pointer-events-none"></div>
+    <!-- HERO SECTION (Imagem Escura com Texto Claro + Logo Legível) -->
+    <section class="relative min-h-screen flex items-center pt-32 pb-16 overflow-hidden" id="home">
 
-        <div class="relative z-10 text-center px-4 w-full max-w-5xl mx-auto mt-12 sm:mt-0 reveal-up">
-            <!-- 3D Translation Badge Responsivo -->
-            <div class="flip-container inline-block mb-8 cursor-pointer group max-w-full" onclick="this.classList.toggle('flipped')" title="Toque para traduzir">
-                <div class="flip-inner">
-                    <!-- Lado Inglês -->
-                    <div class="flip-front px-3 py-2 sm:px-5 sm:py-2.5 rounded-full border border-nexGreen/40 bg-nexGreen/10 flex items-center justify-center shadow-[0_0_20px_rgba(124,179,66,0.15)] w-full box-border">
-                        <span class="text-nexGreen font-semibold text-[9px] min-[380px]:text-[10px] sm:text-sm tracking-widest uppercase flex items-center justify-center text-center whitespace-normal">
-                            <i class="fas fa-satellite-dish mr-2 flex-shrink-0"></i>
-                            <span class="leading-tight">Connected Livestock Solutions</span>
-                            <div class="ml-2 sm:ml-3 pl-2 sm:pl-3 border-l border-nexGreen/30 flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-language text-nexGreen group-hover:scale-125 transition-transform animate-pulse text-sm sm:text-lg"></i>
-                            </div>
-                        </span>
-                    </div>
-                    <!-- Lado Português -->
-                    <div class="flip-back px-3 py-2 sm:px-5 sm:py-2.5 rounded-full border border-nexBlue/40 bg-nexBlue/10 flex items-center justify-center shadow-[0_0_20px_rgba(0,188,212,0.15)] w-full box-border">
-                        <span class="text-nexBlue font-semibold text-[9px] min-[380px]:text-[10px] sm:text-sm tracking-widest uppercase flex items-center justify-center text-center whitespace-normal">
-                            <i class="fas fa-satellite-dish mr-2 flex-shrink-0"></i>
-                            <span class="leading-tight">Soluções Conectadas P/ Pecuária</span>
-                            <div class="ml-2 sm:ml-3 pl-2 sm:pl-3 border-l border-nexBlue/30 flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-check text-nexBlue text-sm sm:text-lg"></i>
-                            </div>
-                        </span>
+        <!-- Fundo de Imagem Noturna (Ajustado para mostrar a imagem 100% inteira estática) -->
+        <div class="absolute inset-0 z-0 overflow-hidden flex justify-center lg:justify-end items-center bg-[#060a12]">
+            <img src="Images/fundoHome.png" alt="Fazenda Inteligente NexFarm" class="w-full h-full object-contain object-center lg:object-right animate-hero-pan">
+        </div>
+
+        <!-- Gradientes para Split Layout (Garante leitura do texto branco na frente da imagem escura) -->
+        <div class="absolute inset-0 bg-gradient-to-r from-[#03060D] via-[#0B1120]/80 to-transparent z-0 pointer-events-none hidden lg:block w-[70%]"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0B1120]/90 via-[#0B1120]/60 to-[#0B1120] z-0 pointer-events-none lg:hidden"></div>
+
+        <div class="w-full max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-12 xl:px-24 relative z-10">
+            <!-- Bloco Esquerdo -->
+            <div class="w-full lg:w-[45%] reveal-up flex flex-col items-start text-left mt-8 lg:mt-0">
+
+                <!-- LOGO COM FUNDO BRANCO E TAMANHO AUMENTADO (Legibilidade do Subtítulo) -->
+                <div class="bg-white px-5 py-3 rounded-[1.5rem] shadow-2xl mb-10 flex items-center justify-center transform transition-transform hover:scale-105 border border-white/20">
+                    <!-- Tamanho aumentado de h-16 para h-20/h-24 -->
+                    <img src="Images/logo_transparente.png" alt="NexFarm Logo" class="h-16 sm:h-24 w-auto object-contain">
+                </div>
+
+                <!-- Badge Interativo -->
+                <div class="flip-container inline-block mb-6 cursor-pointer group max-w-full" onclick="this.classList.toggle('flipped')" title="Toque para traduzir">
+                    <div class="flip-inner">
+                        <!-- Lado Inglês -->
+                        <div class="flip-front px-3 py-2 sm:px-5 sm:py-2.5 rounded-full border border-nexGreen/40 bg-nexGreen/10 flex items-center justify-center shadow-[0_0_20px_rgba(124,179,66,0.15)] w-full box-border">
+                            <span class="text-nexGreen font-semibold text-[9px] min-[380px]:text-[10px] sm:text-sm tracking-widest uppercase flex items-center justify-center text-center whitespace-normal">
+                                <i class="fas fa-satellite-dish mr-2 flex-shrink-0"></i>
+                                <span class="leading-tight">Connected Livestock Solutions</span>
+                                <div class="ml-2 sm:ml-3 pl-2 sm:pl-3 border-l border-nexGreen/30 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-language text-nexGreen group-hover:scale-125 transition-transform animate-pulse text-sm sm:text-lg"></i>
+                                </div>
+                            </span>
+                        </div>
+                        <!-- Lado Português -->
+                        <div class="flip-back px-3 py-2 sm:px-5 sm:py-2.5 rounded-full border border-nexBlue/40 bg-nexBlue/10 flex items-center justify-center shadow-[0_0_20px_rgba(0,188,212,0.15)] w-full box-border">
+                            <span class="text-nexBlue font-semibold text-[9px] min-[380px]:text-[10px] sm:text-sm tracking-widest uppercase flex items-center justify-center text-center whitespace-normal">
+                                <i class="fas fa-satellite-dish mr-2 flex-shrink-0"></i>
+                                <span class="leading-tight">Soluções Conectadas P/ Pecuária</span>
+                                <div class="ml-2 sm:ml-3 pl-2 sm:pl-3 border-l border-nexBlue/30 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-check text-nexBlue text-sm sm:text-lg"></i>
+                                </div>
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <h1 class="text-4xl min-[400px]:text-5xl sm:text-6xl md:text-8xl font-black text-white leading-tight mb-6 sm:mb-8 tracking-tight drop-shadow-2xl">
-                INTELIGÊNCIA PARA <br>
-                O <span class="text-gradient">CAMPO</span>
-            </h1>
+                <!-- Título (Branco por causa do fundo escuro) -->
+                <h1 class="text-4xl min-[400px]:text-5xl sm:text-6xl md:text-7xl lg:text-[4.5rem] font-black text-white leading-[1.05] mb-6 tracking-tight drop-shadow-2xl">
+                    INTELIGÊNCIA PARA <br>
+                    O <span class="text-gradient">CAMPO</span>
+                </h1>
 
-            <p class="mt-2 sm:mt-4 text-base min-[400px]:text-lg sm:text-2xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed mb-8 sm:mb-10 px-2 sm:px-0">
-                Revolucione sua granja com dados de precisão em tempo real. Soluções completas de Hardware, Web, App e Cloud.
-            </p>
+                <!-- Subtítulo -->
+                <p class="mt-2 sm:mt-4 text-base min-[400px]:text-lg sm:text-xl text-gray-300 max-w-lg font-medium leading-relaxed mb-10">
+                    Revolucione sua granja com dados de precisão em tempo real. Soluções completas de Hardware, Web, App e Cloud.
+                </p>
 
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-5 w-full">
-                <a href="#solucoes" class="w-full sm:w-auto bg-gradient-brand text-white px-6 py-3.5 sm:px-9 sm:py-4 rounded-full text-base sm:text-lg font-bold shadow-[0_0_25px_rgba(0,188,212,0.4)] hover:shadow-[0_0_35px_rgba(124,179,66,0.6)] transition-all transform hover:scale-105 text-center">
-                    Ver Soluções
-                </a>
-                <a href="#plataforma" class="w-full sm:w-auto bg-transparent border border-gray-600 text-white hover:border-nexBlue hover:text-nexBlue px-6 py-3.5 sm:px-9 sm:py-4 rounded-full text-base sm:text-lg font-bold transition-all text-center">
-                    Plataforma Cloud
-                </a>
+                <!-- Botões -->
+                <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 w-full sm:w-auto">
+                    <a href="#solucoes" class="w-full sm:w-auto bg-gradient-brand text-white px-8 py-3.5 sm:px-10 sm:py-4 rounded-full text-base sm:text-lg font-bold shadow-[0_0_25px_rgba(0,188,212,0.4)] hover:shadow-[0_0_35px_rgba(124,179,66,0.6)] transition-all transform hover:scale-105 text-center">
+                        Ver Soluções
+                    </a>
+                    <a href="#plataforma" class="w-full sm:w-auto bg-transparent border border-gray-400 text-white hover:border-nexBlue hover:text-nexBlue px-8 py-3.5 sm:px-10 sm:py-4 rounded-full text-base sm:text-lg font-medium transition-all text-center backdrop-blur-sm">
+                        Plataforma Cloud
+                    </a>
+                </div>
+
+                <!-- Linha de Features Finais -->
+                <div class="grid grid-cols-4 gap-2 sm:gap-6 mt-12 pt-8 border-t border-white/10 w-full max-w-xl">
+                    <div class="flex flex-col items-start group cursor-default">
+                        <i class="fas fa-signal text-nexGreen text-lg sm:text-xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-tight group-hover:text-white transition-colors">Conectividade<br>Total</span>
+                    </div>
+                    <div class="flex flex-col items-start group cursor-default">
+                        <i class="fas fa-chart-line text-nexGreen text-lg sm:text-xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-tight group-hover:text-white transition-colors">Dados em<br>Tempo Real</span>
+                    </div>
+                    <div class="flex flex-col items-start group cursor-default">
+                        <i class="fas fa-shield-halved text-nexGreen text-lg sm:text-xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-tight group-hover:text-white transition-colors">Segurança e<br>Confiança</span>
+                    </div>
+                    <div class="flex flex-col items-start group cursor-default">
+                        <i class="fas fa-mobile-screen text-nexGreen text-lg sm:text-xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-tight group-hover:text-white transition-colors">Gestão na<br>Palma</span>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 animate-bounce z-10 reveal-up" style="transition-delay: 400ms;">
-            <a href="#tecnologia" class="text-gray-400 hover:text-white transition-colors">
+            <a href="#tecnologia" class="text-white hover:text-nexBlue transition-colors">
                 <i class="fas fa-chevron-down text-2xl drop-shadow-lg"></i>
             </a>
         </div>
     </section>
 
-    <section id="tecnologia" class="py-28 bg-nexDark relative z-10 border-t border-white/5">
+    <!-- TECNOLOGIA SECTION (CLARA) -->
+    <section id="tecnologia" class="py-28 bg-nexWhite relative z-10 border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-20 reveal-up">
-                <span class="text-nexGreen font-semibold tracking-widest uppercase text-sm">Arquitetura Integrada</span>
-                <h2 class="text-3xl sm:text-5xl font-black mt-2 mb-4">Tecnologia de <span class="text-gradient">Ponta a Ponta</span></h2>
-                <p class="text-gray-400 max-w-2xl mx-auto text-lg">Integração total do equipamento de medição no galpão até a gestão em nuvem.</p>
+                <span class="text-nexGreen font-bold tracking-widest uppercase text-sm">Arquitetura Integrada</span>
+                <h2 class="text-3xl sm:text-5xl font-black mt-2 mb-4 text-nexDark">Tecnologia de <span class="text-gradient">Ponta a Ponta</span></h2>
+                <p class="text-gray-500 max-w-2xl mx-auto text-lg font-medium">Integração total do equipamento de medição no galpão até a gestão em nuvem.</p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Hardcoded cards for instant loading -->
-                <div class="p-8 rounded-3xl bg-white/5 backdrop-blur-sm border border-white/5 hover:border-nexGreen/40 transition-colors duration-300 reveal-up group" style="transition-delay: 100ms;">
+                <!-- Cards Claros com Sombra Suave -->
+                <div class="p-8 rounded-3xl bg-nexLight border border-gray-200 hover:border-nexGreen/40 shadow-sm hover:shadow-lg transition-all duration-300 reveal-up group" style="transition-delay: 100ms;">
                     <div class="w-14 h-14 rounded-2xl bg-nexGreen/10 flex items-center justify-center mb-6 group-hover:bg-nexGreen group-hover:scale-110 transition-all duration-300">
-                        <i class="fas fa-microchip text-2xl text-nexGreen group-hover:text-black"></i>
+                        <i class="fas fa-microchip text-2xl text-nexGreen group-hover:text-white"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-3">Hardware</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">Equipamentos robustos em aço inoxidável e polímeros atóxicos projetados para granjas.</p>
+                    <h3 class="text-2xl font-bold mb-3 text-nexDark">Hardware</h3>
+                    <p class="text-sm text-gray-600 font-medium leading-relaxed">Equipamentos robustos em aço inoxidável e polímeros atóxicos projetados para granjas.</p>
                 </div>
 
-                <div class="p-8 rounded-3xl bg-white/5 backdrop-blur-sm border border-white/5 hover:border-nexBlue/40 transition-colors duration-300 reveal-up group" style="transition-delay: 200ms;">
+                <div class="p-8 rounded-3xl bg-nexLight border border-gray-200 hover:border-nexBlue/40 shadow-sm hover:shadow-lg transition-all duration-300 reveal-up group" style="transition-delay: 200ms;">
                     <div class="w-14 h-14 rounded-2xl bg-nexBlue/10 flex items-center justify-center mb-6 group-hover:bg-nexBlue group-hover:scale-110 transition-all duration-300">
-                        <i class="fas fa-wifi text-2xl text-nexBlue group-hover:text-black"></i>
+                        <i class="fas fa-wifi text-2xl text-nexBlue group-hover:text-white"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-3">IoT & M2M</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">Conectividade inteligente machine-to-machine para fluxo ininterrupto de telemetria.</p>
+                    <h3 class="text-2xl font-bold mb-3 text-nexDark">IoT & M2M</h3>
+                    <p class="text-sm text-gray-600 font-medium leading-relaxed">Conectividade inteligente machine-to-machine para fluxo ininterrupto de telemetria.</p>
                 </div>
 
-                <div class="p-8 rounded-3xl bg-white/5 backdrop-blur-sm border border-white/5 hover:border-nexGreen/40 transition-colors duration-300 reveal-up group" style="transition-delay: 300ms;">
+                <div class="p-8 rounded-3xl bg-nexLight border border-gray-200 hover:border-nexGreen/40 shadow-sm hover:shadow-lg transition-all duration-300 reveal-up group" style="transition-delay: 300ms;">
                     <div class="w-14 h-14 rounded-2xl bg-nexGreen/10 flex items-center justify-center mb-6 group-hover:bg-nexGreen group-hover:scale-110 transition-all duration-300">
-                        <i class="fas fa-cloud text-2xl text-nexGreen group-hover:text-black"></i>
+                        <i class="fas fa-cloud text-2xl text-nexGreen group-hover:text-white"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-3">Cloud Server</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">Processamento de dados escalável com alta disponibilidade para armazenar históricos.</p>
+                    <h3 class="text-2xl font-bold mb-3 text-nexDark">Cloud Server</h3>
+                    <p class="text-sm text-gray-600 font-medium leading-relaxed">Processamento de dados escalável com alta disponibilidade para armazenar históricos.</p>
                 </div>
 
-                <div class="p-8 rounded-3xl bg-white/5 backdrop-blur-sm border border-white/5 hover:border-nexBlue/40 transition-colors duration-300 reveal-up group" style="transition-delay: 400ms;">
+                <div class="p-8 rounded-3xl bg-nexLight border border-gray-200 hover:border-nexBlue/40 shadow-sm hover:shadow-lg transition-all duration-300 reveal-up group" style="transition-delay: 400ms;">
                     <div class="w-14 h-14 rounded-2xl bg-nexBlue/10 flex items-center justify-center mb-6 group-hover:bg-nexBlue group-hover:scale-110 transition-all duration-300">
-                        <i class="fas fa-mobile-screen-button text-2xl text-nexBlue group-hover:text-black"></i>
+                        <i class="fas fa-mobile-screen-button text-2xl text-nexBlue group-hover:text-white"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-3">Web & App</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">Painéis intuitivos para smartphone e computador visando tomada de decisão rápida.</p>
+                    <h3 class="text-2xl font-bold mb-3 text-nexDark">Web & App</h3>
+                    <p class="text-sm text-gray-600 font-medium leading-relaxed">Painéis intuitivos para smartphone e computador visando tomada de decisão rápida.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="plataforma" class="py-28 bg-nexDarker relative z-10 border-t border-white/5">
+    <!-- PLATAFORMA SECTION (CLARA) -->
+    <section id="plataforma" class="py-28 bg-nexLight relative z-10 border-t border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 <div class="lg:col-span-5 reveal-up">
-                    <span class="text-nexBlue font-semibold tracking-widest uppercase text-sm">Controle Total</span>
-                    <h2 class="text-3xl sm:text-5xl font-black mt-2 mb-6 leading-tight">Plataforma de <br><span class="text-gradient">Telemetria em Nuvem</span></h2>
-                    <p class="text-gray-300 text-lg leading-relaxed mb-8">
+                    <span class="text-nexBlue font-bold tracking-widest uppercase text-sm">Controle Total</span>
+                    <h2 class="text-3xl sm:text-5xl font-black mt-2 mb-6 leading-tight text-nexDark">Plataforma de <br><span class="text-gradient">Telemetria em Nuvem</span></h2>
+                    <p class="text-gray-600 text-lg font-medium leading-relaxed mb-8">
                         Centralize as métricas vitais da sua produção em um dashboard moderno. Receba alertas automáticos de desvio de consumo de água, ração ou curva de ganho de peso diretamente no seu celular.
                     </p>
-                    <ul class="space-y-4 text-gray-300 mb-8">
+                    <ul class="space-y-4 text-gray-700 font-semibold mb-8">
                         <li class="flex items-center space-x-3"><i class="fas fa-check-circle text-nexGreen"></i><span>Gráficos da curva de crescimento zootécnico</span></li>
                         <li class="flex items-center space-x-3"><i class="fas fa-check-circle text-nexBlue"></i><span>Integração entre galpões, creches e silos</span></li>
                         <li class="flex items-center space-x-3"><i class="fas fa-check-circle text-nexGreen"></i><span>Alertas de anormalidade em tempo real</span></li>
@@ -428,166 +470,172 @@
                 </div>
 
                 <div class="lg:col-span-7 reveal-up flex justify-center perspective-container" style="transition-delay: 200ms;">
-                    <!-- Monitor Image with 2.5D Parallax Effect -->
+                    <!-- Imagem do Monitor (que é preta, então vai destacar lindo no fundo claro) -->
                     <div class="parallax-scene is-idle w-full max-w-2xl relative flex items-center justify-center cursor-pointer">
-                        <!-- Dynamic Background Glow -->
                         <div class="absolute w-[80%] h-[80%] rounded-full blur-[80px] opacity-20 bg-nexBlue product-glow transition-all duration-300"></div>
-                        <!-- Floating Shadow -->
-                        <div class="absolute -bottom-8 w-[70%] h-8 bg-black rounded-[100%] blur-xl product-shadow opacity-50 z-0 transition-all duration-300"></div>
-                        <!-- Monitor Image -->
-                        <img src="Images/MonitorDeBalanca.png" alt="Monitor de Balança NexFarm" class="relative w-full h-auto object-contain product-img z-10 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/5" loading="lazy" decoding="async">
+                        <!-- Sombra no chão adaptada para fundo branco -->
+                        <div class="absolute -bottom-8 w-[70%] h-8 bg-black rounded-[100%] blur-xl product-shadow opacity-20 z-0 transition-all duration-300"></div>
+                        <img src="Images/MonitorDeBalanca.png" alt="Monitor de Balança NexFarm" class="relative w-full h-auto object-contain product-img z-10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-gray-200" loading="lazy" decoding="async">
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="solucoes" class="py-28 bg-nexDark relative z-10 border-t border-white/5">
+    <!-- PRODUTOS SECTION (CLARA) -->
+    <section id="solucoes" class="py-28 bg-nexWhite relative z-10 border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-24 reveal-up">
-                <span class="text-nexBlue font-semibold tracking-widest uppercase text-sm">Catálogo Oficial</span>
-                <h2 class="text-4xl sm:text-6xl font-black mt-2 mb-6">Soluções de <span class="text-gradient">Precisão</span></h2>
+                <span class="text-nexBlue font-bold tracking-widest uppercase text-sm">Catálogo Oficial</span>
+                <h2 class="text-4xl sm:text-6xl font-black mt-2 mb-6 text-nexDark">Soluções de <span class="text-gradient">Precisão</span></h2>
                 <div class="w-24 h-1 bg-gradient-brand mx-auto rounded-full"></div>
             </div>
 
             <div class="space-y-32">
+
+                <!-- PRODUTO 1 -->
                 <div id="prod-dosadores" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center reveal-up">
                     <div class="lg:col-span-6 lg:order-1 flex justify-center perspective-container">
-                        <!-- is-idle adds the CSS float animation. JS removes it on hover. -->
                         <div class="parallax-scene is-idle w-full max-w-md h-[380px] relative flex items-center justify-center cursor-pointer">
-                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-30 bg-nexGreen product-glow transition-all duration-300"></div>
-                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-50 z-0 transition-all duration-300"></div>
+                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-20 bg-nexGreen product-glow transition-all duration-300"></div>
+                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-15 z-0 transition-all duration-300"></div>
                             <img src="Images/DosadoresAutomaticosRacao.png" alt="Dosadores Automáticos" class="absolute inset-0 w-full h-full object-contain p-4 product-img z-10" loading="lazy" decoding="async">
                         </div>
                     </div>
                     <div class="lg:col-span-6 lg:order-2">
                         <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-nexGreen bg-nexGreen/10 border border-nexGreen/20 mb-4">IoT / 40 Litros</span>
-                        <h3 class="text-3xl sm:text-4xl font-black text-white mb-2">Dosadores Automáticos</h3>
-                        <h4 class="text-lg font-medium text-nexGreen mb-6">Automação de Ração</h4>
-                        <p class="text-gray-300 text-base leading-relaxed mb-6">Programe, dose e monitore a ração nos cochos com extrema precisão. Equipamento digital, 100% automático, resistente a impactos e confeccionado em polímero atóxico com capacidade de 40L.</p>
-                        <ul class="space-y-2 mb-8">
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexGreen mr-3"></i>Dosagem programada</li>
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexGreen mr-3"></i>Resistente a lavagens pesadas</li>
+                        <h3 class="text-3xl sm:text-4xl font-black text-nexDark mb-2">Dosadores Automáticos</h3>
+                        <h4 class="text-lg font-bold text-nexGreen mb-6">Automação de Ração</h4>
+                        <p class="text-gray-600 font-medium text-base leading-relaxed mb-6">Programe, dose e monitore a ração nos cochos com extrema precisão. Equipamento digital, 100% automático, resistente a impactos e confeccionado em polímero atóxico com capacidade de 40L.</p>
+                        <ul class="space-y-2 mb-8 font-semibold text-gray-700">
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexGreen mr-3"></i>Dosagem programada</li>
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexGreen mr-3"></i>Resistente a lavagens pesadas</li>
                         </ul>
                     </div>
                 </div>
 
+                <!-- PRODUTO 2 -->
                 <div id="prod-flowscale-corredor" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center reveal-up">
                     <div class="lg:col-span-6 lg:order-2 flex justify-center perspective-container">
                         <div class="parallax-scene is-idle w-full max-w-md h-[380px] relative flex items-center justify-center cursor-pointer">
-                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-30 bg-nexBlue product-glow transition-all duration-300"></div>
-                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-50 z-0 transition-all duration-300"></div>
+                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-20 bg-nexBlue product-glow transition-all duration-300"></div>
+                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-15 z-0 transition-all duration-300"></div>
                             <img src="Images/BalancasAutomaticasSuinos.png" alt="FlowScale Corredor" class="absolute inset-0 w-full h-full object-contain p-4 product-img z-10" loading="lazy" decoding="async">
                         </div>
                     </div>
                     <div class="lg:col-span-6 lg:order-1">
                         <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-nexBlue bg-nexBlue/10 border border-nexBlue/20 mb-4">Pesagem em Fluxo</span>
-                        <h3 class="text-3xl sm:text-4xl font-black text-white mb-2">FlowScale - Corredor</h3>
-                        <h4 class="text-lg font-medium text-nexBlue mb-6">Balança de Passagem para Suínos</h4>
-                        <p class="text-gray-300 text-base leading-relaxed mb-6">Pese seus animais sem interromper o fluxo natural no corredor. Sistema automatizado de pesagem em movimento com envio de curvas de crescimento direto para a nuvem via M2M.</p>
-                        <ul class="space-y-2 mb-8">
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexBlue mr-3"></i>Zero estresse animal</li>
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexBlue mr-3"></i>Estrutura robusta em aço inox</li>
+                        <h3 class="text-3xl sm:text-4xl font-black text-nexDark mb-2">FlowScale - Corredor</h3>
+                        <h4 class="text-lg font-bold text-nexBlue mb-6">Balança de Passagem para Suínos</h4>
+                        <p class="text-gray-600 font-medium text-base leading-relaxed mb-6">Pese seus animais sem interromper o fluxo natural no corredor. Sistema automatizado de pesagem em movimento com envio de curvas de crescimento direto para a nuvem via M2M.</p>
+                        <ul class="space-y-2 mb-8 font-semibold text-gray-700">
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexBlue mr-3"></i>Zero estresse animal</li>
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexBlue mr-3"></i>Estrutura robusta em aço inox</li>
                         </ul>
                     </div>
                 </div>
 
+                <!-- PRODUTO 3 -->
                 <div id="prod-flowscale-coletiva" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center reveal-up">
                     <div class="lg:col-span-6 lg:order-1 flex justify-center perspective-container">
                         <div class="parallax-scene is-idle w-full max-w-md h-[380px] relative flex items-center justify-center cursor-pointer">
-                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-30 bg-nexGreen product-glow transition-all duration-300"></div>
-                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-50 z-0 transition-all duration-300"></div>
+                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-20 bg-nexGreen product-glow transition-all duration-300"></div>
+                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-15 z-0 transition-all duration-300"></div>
                             <img src="Images/BalancasAutomaticasSuinos2.png" alt="FlowScale Coletiva e Individual" class="absolute inset-0 w-full h-full object-contain p-4 product-img z-10" loading="lazy" decoding="async">
                         </div>
                     </div>
                     <div class="lg:col-span-6 lg:order-2">
                         <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-nexGreen bg-nexGreen/10 border border-nexGreen/20 mb-4">Precisão Extrema</span>
-                        <h3 class="text-3xl sm:text-4xl font-black text-white mb-2">FlowScale - Coletiva & Indiv.</h3>
-                        <h4 class="text-lg font-medium text-nexGreen mb-6">Pesagem de Suínos de Precisão</h4>
-                        <p class="text-gray-300 text-base leading-relaxed mb-6">Monitoramento de peso em grupo ou individualizado. Acompanhe a evolução diária do ganho de massa magra dos suínos e otimize o período exato de abate com relatórios gerenciais automáticos.</p>
-                        <ul class="space-y-2 mb-8">
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexGreen mr-3"></i>Seleção por faixa de peso ideal</li>
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexGreen mr-3"></i>Previsibilidade de faturamento</li>
+                        <h3 class="text-3xl sm:text-4xl font-black text-nexDark mb-2">FlowScale - Coletiva & Indiv.</h3>
+                        <h4 class="text-lg font-bold text-nexGreen mb-6">Pesagem de Suínos de Precisão</h4>
+                        <p class="text-gray-600 font-medium text-base leading-relaxed mb-6">Monitoramento de peso em grupo ou individualizado. Acompanhe a evolução diária do ganho de massa magra dos suínos e otimize o período exato de abate com relatórios gerenciais automáticos.</p>
+                        <ul class="space-y-2 mb-8 font-semibold text-gray-700">
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexGreen mr-3"></i>Seleção por faixa de peso ideal</li>
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexGreen mr-3"></i>Previsibilidade de faturamento</li>
                         </ul>
                     </div>
                 </div>
 
+                <!-- PRODUTO 4 -->
                 <div id="prod-leitoes" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center reveal-up">
                     <div class="lg:col-span-6 lg:order-2 flex justify-center perspective-container">
                         <div class="parallax-scene is-idle w-full max-w-md h-[380px] relative flex items-center justify-center cursor-pointer">
-                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-30 bg-nexBlue product-glow transition-all duration-300"></div>
-                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-50 z-0 transition-all duration-300"></div>
+                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-20 bg-nexBlue product-glow transition-all duration-300"></div>
+                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-15 z-0 transition-all duration-300"></div>
                             <img src="Images/BalancasParaLeitoes.png" alt="Balanças para Leitões" class="absolute inset-0 w-full h-full object-contain p-4 product-img z-10" loading="lazy" decoding="async">
                         </div>
                     </div>
                     <div class="lg:col-span-6 lg:order-1">
                         <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-nexBlue bg-nexBlue/10 border border-nexBlue/20 mb-4">Portátil / Creche</span>
-                        <h3 class="text-3xl sm:text-4xl font-black text-white mb-2">Balanças para Leitões</h3>
-                        <h4 class="text-lg font-medium text-nexBlue mb-6">Manejo Prático e Leve</h4>
-                        <p class="text-gray-300 text-base leading-relaxed mb-6">Solução portátil desenvolvida especificamente para as fases iniciais, creche e aleitamento. Facilidade extrema de operação por um único funcionário e higienização simplificada no ambiente da granja.</p>
-                        <ul class="space-y-2 mb-8">
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexBlue mr-3"></i>Design Ergonômico</li>
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexBlue mr-3"></i>Bateria de longa duração</li>
+                        <h3 class="text-3xl sm:text-4xl font-black text-nexDark mb-2">Balanças para Leitões</h3>
+                        <h4 class="text-lg font-bold text-nexBlue mb-6">Manejo Prático e Leve</h4>
+                        <p class="text-gray-600 font-medium text-base leading-relaxed mb-6">Solução portátil desenvolvida especificamente para as fases iniciais, creche e aleitamento. Facilidade extrema de operação por um único funcionário e higienização simplificada no ambiente da granja.</p>
+                        <ul class="space-y-2 mb-8 font-semibold text-gray-700">
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexBlue mr-3"></i>Design Ergonômico</li>
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexBlue mr-3"></i>Bateria de longa duração</li>
                         </ul>
                     </div>
                 </div>
 
+                <!-- PRODUTO 5 -->
                 <div id="prod-pendulo" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center reveal-up">
                     <div class="lg:col-span-6 lg:order-1 flex justify-center perspective-container">
                         <div class="parallax-scene is-idle w-full max-w-md h-[380px] relative flex items-center justify-center cursor-pointer">
-                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-30 bg-nexGreen product-glow transition-all duration-300"></div>
-                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-50 z-0 transition-all duration-300"></div>
+                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-20 bg-nexGreen product-glow transition-all duration-300"></div>
+                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-15 z-0 transition-all duration-300"></div>
                             <img src="Images/BalancasPendulo.png" alt="Plataforma Pêndulo" class="absolute inset-0 w-full h-full object-contain p-4 product-img z-10" loading="lazy" decoding="async">
                         </div>
                     </div>
                     <div class="lg:col-span-6 lg:order-2">
                         <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-nexGreen bg-nexGreen/10 border border-nexGreen/20 mb-4">Frangos de Corte</span>
-                        <h3 class="text-3xl sm:text-4xl font-black text-white mb-2">Plataforma Pêndulo</h3>
-                        <h4 class="text-lg font-medium text-nexGreen mb-6">Avicultura de Precisão</h4>
-                        <p class="text-gray-300 text-base leading-relaxed mb-6">Monitore a curva de peso de frangos de corte em tempo real com plataformas suspensas altamente sensíveis. O sistema coleta amostragem natural garantindo dados confiáveis para ajuste imediato da nutrição.</p>
-                        <ul class="space-y-2 mb-8">
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexGreen mr-3"></i>Instalação suspensa</li>
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexGreen mr-3"></i>Não interfere no alojamento</li>
+                        <h3 class="text-3xl sm:text-4xl font-black text-nexDark mb-2">Plataforma Pêndulo</h3>
+                        <h4 class="text-lg font-bold text-nexGreen mb-6">Avicultura de Precisão</h4>
+                        <p class="text-gray-600 font-medium text-base leading-relaxed mb-6">Monitore a curva de peso de frangos de corte em tempo real com plataformas suspensas altamente sensíveis. O sistema coleta amostragem natural garantindo dados confiáveis para ajuste imediato da nutrição.</p>
+                        <ul class="space-y-2 mb-8 font-semibold text-gray-700">
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexGreen mr-3"></i>Instalação suspensa</li>
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexGreen mr-3"></i>Não interfere no alojamento</li>
                         </ul>
                     </div>
                 </div>
 
+                <!-- PRODUTO 7 -->
                 <div id="prod-silos" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center reveal-up">
                     <div class="lg:col-span-6 lg:order-1 flex justify-center perspective-container">
                         <div class="parallax-scene is-idle w-full max-w-md h-[380px] relative flex items-center justify-center cursor-pointer">
-                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-30 bg-nexGreen product-glow transition-all duration-300"></div>
-                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-50 z-0 transition-all duration-300"></div>
+                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-20 bg-nexGreen product-glow transition-all duration-300"></div>
+                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-15 z-0 transition-all duration-300"></div>
                             <img src="Images/BalancasParaSilos.png" alt="Balanças para Silos" class="absolute inset-0 w-full h-full object-contain p-4 product-img z-10" loading="lazy" decoding="async">
                         </div>
                     </div>
                     <div class="lg:col-span-6 lg:order-2">
                         <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-nexGreen bg-nexGreen/10 border border-nexGreen/20 mb-4">Gestão de Estoque</span>
-                        <h3 class="text-3xl sm:text-4xl font-black text-white mb-2">Balanças para Silos</h3>
-                        <h4 class="text-lg font-medium text-nexGreen mb-6">Até 4 Silos Integrados</h4>
-                        <p class="text-gray-300 text-base leading-relaxed mb-6">Evite a falta de insumos de surpresa. O sistema monitora o peso bruto de até 4 silos simultaneamente através de células de carga industriais conectadas a um único leitor central inteligente.</p>
-                        <ul class="space-y-2 mb-8">
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexGreen mr-3"></i>Células de carga blindadas</li>
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexGreen mr-3"></i>Alertas de estoque baixo via SMS/App</li>
+                        <h3 class="text-3xl sm:text-4xl font-black text-nexDark mb-2">Balanças para Silos</h3>
+                        <h4 class="text-lg font-bold text-nexGreen mb-6">Até 4 Silos Integrados</h4>
+                        <p class="text-gray-600 font-medium text-base leading-relaxed mb-6">Evite a falta de insumos de surpresa. O sistema monitora o peso bruto de até 4 silos simultaneamente através de células de carga industriais conectadas a um único leitor central inteligente.</p>
+                        <ul class="space-y-2 mb-8 font-semibold text-gray-700">
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexGreen mr-3"></i>Células de carga blindadas</li>
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexGreen mr-3"></i>Alertas de estoque baixo via SMS/App</li>
                         </ul>
                     </div>
                 </div>
 
+                <!-- PRODUTO 8 -->
                 <div id="prod-fluxometro" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center reveal-up">
                     <div class="lg:col-span-6 lg:order-2 flex justify-center perspective-container">
                         <div class="parallax-scene is-idle w-full max-w-md h-[380px] relative flex items-center justify-center cursor-pointer">
-                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-30 bg-nexBlue product-glow transition-all duration-300"></div>
-                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-50 z-0 transition-all duration-300"></div>
+                            <div class="absolute w-64 h-64 rounded-full blur-[60px] opacity-20 bg-nexBlue product-glow transition-all duration-300"></div>
+                            <div class="absolute bottom-8 w-48 h-6 bg-black rounded-[100%] blur-md product-shadow opacity-15 z-0 transition-all duration-300"></div>
                             <img src="Images/MedidoresDeConsumoDagua.png" alt="Fluxômetro de Água" class="absolute inset-0 w-full h-full object-contain p-4 product-img z-10" loading="lazy" decoding="async">
                         </div>
                     </div>
                     <div class="lg:col-span-6 lg:order-1">
                         <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-nexBlue bg-nexBlue/10 border border-nexBlue/20 mb-4">Consumo Hídrico</span>
-                        <h3 class="text-3xl sm:text-4xl font-black text-white mb-2">Fluxômetro Digital</h3>
-                        <h4 class="text-lg font-medium text-nexBlue mb-6">Medidores de Consumo de Água</h4>
-                        <p class="text-gray-300 text-base leading-relaxed mb-6">O consumo de água é o primeiro indicador de saúde do lote. Acompanhe volumetricamente o consumo hídrico do galpão em tempo real e identifique precocemente vazamentos na tubulação ou doenças sistêmicas.</p>
-                        <ul class="space-y-2 mb-8">
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexBlue mr-3"></i>Leitura em alta vazão</li>
-                            <li class="flex items-center text-sm text-gray-400"><i class="fas fa-check text-nexBlue mr-3"></i>Fácil acoplagem hidráulica</li>
+                        <h3 class="text-3xl sm:text-4xl font-black text-nexDark mb-2">Fluxômetro Digital</h3>
+                        <h4 class="text-lg font-bold text-nexBlue mb-6">Medidores de Consumo de Água</h4>
+                        <p class="text-gray-600 font-medium text-base leading-relaxed mb-6">O consumo de água é o primeiro indicador de saúde do lote. Acompanhe volumetricamente o consumo hídrico do galpão em tempo real e identifique precocemente vazamentos na tubulação ou doenças sistêmicas.</p>
+                        <ul class="space-y-2 mb-8 font-semibold text-gray-700">
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexBlue mr-3"></i>Leitura em alta vazão</li>
+                            <li class="flex items-center text-sm"><i class="fas fa-check text-nexBlue mr-3"></i>Fácil acoplagem hidráulica</li>
                         </ul>
                     </div>
                 </div>
@@ -596,150 +644,65 @@
         </div>
     </section>
 
-    <footer id="contato" class="bg-black pt-24 pb-12 border-t border-white/10 relative overflow-hidden">
+    <!-- FOOTER SECTION (CLARO) -->
+    <footer id="contato" class="bg-nexLight pt-24 pb-12 border-t border-gray-200 relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-brand"></div>
-        <div class="absolute -top-[250px] -right-[250px] w-[500px] h-[500px] rounded-full bg-nexBlue/5 blur-[120px] pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
                 <div class="col-span-1 md:col-span-2">
-                    <div class="bg-white inline-block px-4 py-3 rounded-2xl shadow-[0_0_25px_rgba(124,179,66,0.2)] mb-6">
-                        <img src="Images/logo_transparente.png" alt="NexFarm Logo" class="h-16 md:h-20 w-auto object-contain" decoding="async" loading="lazy">
+                    <!-- Logo no Footer sem a caixa branca, pois o fundo já é claro. Apenas a imagem bem grande. -->
+                    <div class="mb-6">
+                        <img src="Images/logo_transparente.png" alt="NexFarm Logo" class="h-20 md:h-24 w-auto object-contain" decoding="async" loading="lazy">
                     </div>
-                    <p class="text-gray-400 max-w-md leading-relaxed text-sm mb-6">
+                    <p class="text-gray-600 font-medium max-w-md leading-relaxed text-sm mb-6">
                         Transformando a pecuária através de tecnologia, conectividade e dados precisos em tempo real. Soluções de alta performance para o produtor moderno.
                     </p>
                     <div class="flex space-x-4">
-                        <!-- Botão Instagram (Substitua nexfarm pelo @ correto) -->
-                        <a href="https://www.instagram.com/nexfarm_oficial/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:bg-nexGreen hover:text-black transition-all" title="Siga nosso Instagram"><i class="fab fa-instagram"></i></a>
-
-                        <!-- Botão E-mail -->
-                        <a href="mailto:atendimento@nexfarm.com.br" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:bg-nexBlue hover:text-black transition-all" title="Envie um e-mail"><i class="fa-regular fa-envelope"></i></a>
-
-                        <!-- Botão WhatsApp (Substitua o 5554900000000 pelo número correto, apenas números) -->
-                        <a href="https://wa.me/5554900000000" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:bg-gradient-brand hover:text-white transition-all" title="Fale pelo WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/nexfarm_oficial/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-nexGreen hover:text-white hover:border-nexGreen transition-all" title="Siga nosso Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="mailto:atendimento@nexfarm.com.br" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-nexBlue hover:text-white hover:border-nexBlue transition-all" title="Envie um e-mail"><i class="fa-regular fa-envelope"></i></a>
+                        <a href="https://wa.me/5554900000000" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gradient-brand hover:text-white hover:border-transparent transition-all" title="Fale pelo WhatsApp"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
 
                 <div>
-                    <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-sm border-l-2 border-nexGreen pl-3">Links Rápidos</h4>
-                    <ul class="space-y-3 text-sm">
-                        <li><a href="#home" class="text-gray-400 hover:text-white transition-colors">Início</a></li>
-                        <li><a href="#tecnologia" class="text-gray-400 hover:text-white transition-colors">Tecnologia</a></li>
-                        <li><a href="#plataforma" class="text-gray-400 hover:text-white transition-colors">Plataforma Cloud</a></li>
-                        <li><a href="#solucoes" class="text-gray-400 hover:text-white transition-colors">Ver Soluções</a></li>
+                    <h4 class="text-nexDark font-black mb-6 uppercase tracking-wider text-sm border-l-4 border-nexGreen pl-3">Links Rápidos</h4>
+                    <ul class="space-y-3 text-sm font-semibold">
+                        <li><a href="#home" class="text-gray-600 hover:text-nexBlue transition-colors">Início</a></li>
+                        <li><a href="#tecnologia" class="text-gray-600 hover:text-nexBlue transition-colors">Tecnologia</a></li>
+                        <li><a href="#plataforma" class="text-gray-600 hover:text-nexBlue transition-colors">Plataforma Cloud</a></li>
+                        <li><a href="#solucoes" class="text-gray-600 hover:text-nexBlue transition-colors">Ver Soluções</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-sm border-l-2 border-nexBlue pl-3">Contato</h4>
-                    <ul class="space-y-4 text-sm text-gray-400">
+                    <h4 class="text-nexDark font-black mb-6 uppercase tracking-wider text-sm border-l-4 border-nexBlue pl-3">Contato</h4>
+                    <ul class="space-y-4 text-sm font-semibold text-gray-600">
                         <li class="flex items-start">
                             <i class="fas fa-map-marker-alt mt-1 mr-3 text-nexBlue"></i>
                             <span>Passo Fundo - RS, Brasil</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-envelope mr-3 text-nexGreen"></i>
-                            <a href="mailto:atendimento@nexfarm.com.br" class="hover:text-white transition-colors">contato@nexfarm.com.br</a>
+                            <a href="mailto:atendimento@nexfarm.com.br" class="hover:text-nexBlue transition-colors">atendimento@nexfarm.com.br</a>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
-                <p>&copy; 2026 NexFarm Connected Livestock Solutions | Todos os direitos reservados.</p>
-                <p class="mt-2 md:mt-0">Desenvolvido por <strong class="text-gray-400">J. Caetano</strong></p>
+            <div class="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 font-medium">
+                <p>&copy; 2026 NexFarm Connected Livestock Solutions. Todos os direitos reservados.</p>
+                <p class="mt-2 md:mt-0">Desenvolvido por <strong class="text-gray-800">J. Caetano</strong></p>
             </div>
         </div>
     </footer>
 
     <script>
-        // --- 1. SAFE THREE.JS BACKGROUND ---
-        // Wraps ThreeJS in a try-catch so it NEVER blocks the page rendering if it fails
-        const initThreeJS = () => {
-            try {
-                if (typeof THREE === 'undefined') return;
-                const container = document.getElementById('webgl-container');
-                if (!container) return;
-
-                const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                camera.position.z = 100;
-
-                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: "low-power" });
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                // Lower pixel ratio saves massive GPU processing on mobile
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-                container.appendChild(renderer.domElement);
-
-                const particlesGeometry = new THREE.BufferGeometry();
-                const particlesCount = 200;
-                const posArray = new Float32Array(particlesCount * 3);
-
-                for (let i = 0; i < particlesCount * 3; i++) {
-                    posArray[i] = (Math.random() - 0.5) * 220;
-                }
-                particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-
-                const particlesMaterial = new THREE.PointsMaterial({
-                    size: 0.9, color: '#00BCD4', transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending
-                });
-                const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-                const group = new THREE.Group();
-                scene.add(group);
-                group.add(particlesMesh);
-
-                const ringGeo = new THREE.RingGeometry(45, 45.5, 32);
-                const ringMat = new THREE.MeshBasicMaterial({ color: '#7CB342', side: THREE.DoubleSide, transparent: true, opacity: 0.25 });
-                const ring = new THREE.Mesh(ringGeo, ringMat);
-                ring.rotation.x = Math.PI / 2;
-                group.add(ring);
-
-                let mouseX = 0, mouseY = 0;
-                let isHeroVisible = true;
-
-                // Smart pausing: Stops running the 3D loop if the user scrolls past the Hero section
-                const heroObserver = new IntersectionObserver((entries) => {
-                    isHeroVisible = entries[0].isIntersecting;
-                }, { threshold: 0.01 });
-
-                const homeSect = document.getElementById('home');
-                if (homeSect) heroObserver.observe(homeSect);
-
-                document.addEventListener('mousemove', (e) => {
-                    if (!isHeroVisible) return;
-                    mouseX = (e.clientX - window.innerWidth / 2) * 0.0006;
-                    mouseY = (e.clientY - window.innerHeight / 2) * 0.0006;
-                }, { passive: true }); // passive true improves scroll performance
-
-                window.addEventListener('resize', () => {
-                    camera.aspect = window.innerWidth / window.innerHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                });
-
-                const animate = () => {
-                    requestAnimationFrame(animate);
-                    if (!isHeroVisible) return; // Saves CPU/GPU when scrolling down
-
-                    group.rotation.y += 0.02 * (mouseX - group.rotation.y);
-                    group.rotation.x += 0.02 * (mouseY - group.rotation.x);
-                    group.rotation.z += 0.0008;
-                    renderer.render(scene, camera);
-                };
-                animate();
-            } catch (e) {
-                console.warn("Three.js skipped for performance.", e);
-            }
-        };
-
-        // --- 2. NATIVE SCROLL REVEAL (Replaces heavy AOS library) ---
-        // Ultra lightweight observer to fade elements in as you scroll
+        // Native Scroll Reveal Engine
         const initScrollReveal = () => {
             const elements = document.querySelectorAll('.reveal-up');
 
             if (!window.IntersectionObserver) {
-                // Fallback for very old browsers
                 elements.forEach(el => el.classList.add('is-visible'));
                 return;
             }
@@ -748,7 +711,7 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-visible');
-                        obs.unobserve(entry.target); // Stop observing once revealed
+                        obs.unobserve(entry.target);
                     }
                 });
             }, { rootMargin: '0px 0px -50px 0px', threshold: 0.1 });
@@ -756,13 +719,12 @@
             elements.forEach(el => observer.observe(el));
         };
 
-        // --- 3. HIGH PERFORMANCE 2.5D PARALLAX (Lerp) ---
-        // JS only calculates math when a user is actively hovering. Idle floating is done by pure CSS.
+        // High Performance 2.5D Parallax Engine (Lerp)
         const initProductParallax = () => {
             const scenes = document.querySelectorAll('.parallax-scene');
             const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-            if (prefersReducedMotion) return; // Accessibility check
+            if (prefersReducedMotion) return;
 
             scenes.forEach(scene => {
                 const img = scene.querySelector('.product-img');
@@ -773,25 +735,23 @@
                 let targetX = 0, targetY = 0;
                 let currentRotX = 0, currentRotY = 0;
 
-                // Helper for smooth easing
                 const lerp = (start, end, factor) => start + (end - start) * factor;
 
                 const updateParallax = () => {
-                    // Stop loop if resting near 0,0 and not hovering (SAVES 100% CPU)
+                    // Turn off physics calculations when not hovering and rested
                     if (!isHovering && Math.abs(currentRotX) < 0.1 && Math.abs(currentRotY) < 0.1) {
                         scene.style.transform = `rotateX(0deg) rotateY(0deg)`;
                         if (img) img.style.transform = `translateZ(10px) scale(1)`;
                         if (shadow) shadow.style.transform = `scale(1)`;
-                        scene.classList.add('is-idle'); // Re-enable GPU CSS idle floating
+                        scene.classList.add('is-idle'); // Returns to pure CSS floating
                         animFrameId = null;
                         return;
                     }
 
-                    // Apply lerp for smooth physics
-                    currentRotX = lerp(currentRotX, targetY * -12, 0.08); // Max 12 deg tilt
+                    // Physics Lerp
+                    currentRotX = lerp(currentRotX, targetY * -12, 0.08);
                     currentRotY = lerp(currentRotY, targetX * 12, 0.08);
 
-                    // Apply 3D Transforms
                     scene.style.transform = `rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg)`;
 
                     if (img) img.style.transform = `translateZ(40px) scale(${isHovering ? 1.05 : 1})`;
@@ -800,13 +760,12 @@
                     animFrameId = requestAnimationFrame(updateParallax);
                 };
 
-                // Mouse / Touch Handlers
                 scene.addEventListener('pointerenter', () => {
                     isHovering = true;
                     rect = scene.getBoundingClientRect();
-                    scene.classList.remove('is-idle'); // Stop CSS float
-                    if (glow) glow.style.opacity = '0.6';
-                    if (shadow) shadow.style.opacity = '0.8';
+                    scene.classList.remove('is-idle');
+                    if (glow) glow.style.opacity = '0.4';
+                    if (shadow) shadow.style.opacity = '0.3';
 
                     if (!animFrameId) animFrameId = requestAnimationFrame(updateParallax);
                 }, { passive: true });
@@ -815,7 +774,6 @@
                     if (!isHovering || !rect) return;
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-                    // Normalize -1 to 1
                     targetX = (x - rect.width / 2) / (rect.width / 2);
                     targetY = (y - rect.height / 2) / (rect.height / 2);
                 }, { passive: true });
@@ -824,14 +782,14 @@
                     isHovering = false;
                     targetX = 0;
                     targetY = 0;
-                    if (glow) glow.style.opacity = '0.3';
-                    if (shadow) shadow.style.opacity = '0.5';
+                    if (glow) glow.style.opacity = '0.2';
+                    if (shadow) shadow.style.opacity = '0.15';
                     if (!animFrameId) animFrameId = requestAnimationFrame(updateParallax);
                 }, { passive: true });
             });
         };
 
-        // --- 4. MOBILE MENU HELPERS ---
+        // Mobile Nav Helpers
         const toggleMobileMenu = () => {
             const menu = document.getElementById('mobile-menu');
             if (menu) menu.classList.toggle('hidden');
@@ -844,13 +802,10 @@
             if (arrow) arrow.classList.toggle('rotate-180');
         };
 
-        // --- 5. INITIALIZATION ---
-        // Runs immediately when DOM is safe, doesn't wait for images to finish downloading
+        // Initialize Core Engines
         document.addEventListener('DOMContentLoaded', () => {
             initScrollReveal();
             initProductParallax();
-            // Wrap three.js load slightly later to prioritize HTML painting
-            setTimeout(initThreeJS, 100);
         });
     </script>
 </body>
