@@ -275,63 +275,68 @@
                     <a href="#contato" class="bg-gradient-brand text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg hover:shadow-cyan-500/40 transition-all transform hover:-translate-y-0.5">Fale Conosco</a>
                 </div>
 
-                <!-- Mobile Menu Toggle Button (Direita) -->
+                <!-- Mobile Menu Toggle Button (Direita) - Ajustado padding e tamanho -->
                 <div class="flex md:hidden absolute right-4 z-20">
-                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-[#475569] hover:text-nexBlue focus:outline-none" onclick="toggleMobileMenu()">
-                        <i class="fas fa-bars text-2xl"></i>
+                    <button type="button" class="inline-flex items-center justify-center p-3 rounded-md text-[#475569] hover:text-nexBlue hover:bg-gray-100 transition-colors focus:outline-none" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-3xl"></i>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Mobile Accordion Menu -->
+        <!-- Mobile Accordion Menu - Com mais respiro (padding e height) -->
         <div class="md:hidden hidden bg-white/95 border-b border-gray-100 backdrop-blur-lg absolute w-full shadow-xl" id="mobile-menu">
-            <div class="px-4 pt-3 pb-6 space-y-2">
-                <a href="#home" onclick="toggleMobileMenu()" class="text-[#1E293B] font-bold hover:text-nexBlue block px-3 py-2 rounded-md text-base">Início</a>
-                <a href="#tecnologia" onclick="toggleMobileMenu()" class="text-[#1E293B] font-bold hover:text-nexBlue block px-3 py-2 rounded-md text-base">Tecnologia</a>
-                <a href="#plataforma" onclick="toggleMobileMenu()" class="text-[#1E293B] font-bold hover:text-nexBlue block px-3 py-2 rounded-md text-base">Plataforma Cloud</a>
+            <div class="px-4 pt-4 pb-8 space-y-3">
+                <a href="#home" onclick="toggleMobileMenu()" class="text-[#1E293B] font-bold hover:text-nexBlue block px-3 py-3 rounded-md text-lg">Início</a>
+                <a href="#tecnologia" onclick="toggleMobileMenu()" class="text-[#1E293B] font-bold hover:text-nexBlue block px-3 py-3 rounded-md text-lg">Tecnologia</a>
+                <a href="#plataforma" onclick="toggleMobileMenu()" class="text-[#1E293B] font-bold hover:text-nexBlue block px-3 py-3 rounded-md text-lg">Plataforma Cloud</a>
 
                 <div>
-                    <button onclick="toggleMobileDropdown()" class="w-full text-left text-[#1E293B] font-bold hover:text-nexBlue flex justify-between items-center px-3 py-2 text-base">
+                    <button onclick="toggleMobileDropdown()" class="w-full text-left text-[#1E293B] font-bold hover:text-nexBlue flex justify-between items-center px-3 py-3 text-lg">
                         <span>Soluções / Produtos</span>
-                        <i class="fas fa-chevron-down text-xs transition-transform" id="mobile-arrow"></i>
+                        <i class="fas fa-chevron-down text-sm transition-transform" id="mobile-arrow"></i>
                     </button>
-                    <div class="hidden pl-4 space-y-1 mt-1 border-l-2 border-nexGreen/30" id="mobile-solucoes">
-                        <a href="#prod-dosadores" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-[#475569] hover:text-[#1E293B]">Dosadores Automáticos</a>
-                        <a href="#prod-flowscale-corredor" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-[#475569] hover:text-[#1E293B]">FlowScale Corredor</a>
-                        <a href="#prod-flowscale-coletiva" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-[#475569] hover:text-[#1E293B]">FlowScale Coletiva/Indiv.</a>
-                        <a href="#prod-leitoes" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-[#475569] hover:text-[#1E293B]">Balanças para Leitões</a>
-                        <a href="#prod-pendulo" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-[#475569] hover:text-[#1E293B]">Plataforma Pêndulo</a>
-                        <a href="#prod-puleiro" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-[#475569] hover:text-[#1E293B]">Balança Puleiro</a>
-                        <a href="#prod-silos" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-[#475569] hover:text-[#1E293B]">Balanças para Silos</a>
-                        <a href="#prod-fluxometro" onclick="toggleMobileMenu()" class="block px-3 py-2 text-sm text-[#475569] hover:text-[#1E293B]">Fluxômetro Digital</a>
+                    <div class="hidden pl-5 space-y-2 mt-2 border-l-2 border-nexGreen/30" id="mobile-solucoes">
+                        <a href="#prod-dosadores" onclick="toggleMobileMenu()" class="block px-3 py-2 text-base text-[#475569] hover:text-[#1E293B]">Dosadores Automáticos</a>
+                        <a href="#prod-flowscale-corredor" onclick="toggleMobileMenu()" class="block px-3 py-2 text-base text-[#475569] hover:text-[#1E293B]">FlowScale Corredor</a>
+                        <a href="#prod-flowscale-coletiva" onclick="toggleMobileMenu()" class="block px-3 py-2 text-base text-[#475569] hover:text-[#1E293B]">FlowScale Coletiva/Indiv.</a>
+                        <a href="#prod-leitoes" onclick="toggleMobileMenu()" class="block px-3 py-2 text-base text-[#475569] hover:text-[#1E293B]">Balanças para Leitões</a>
+                        <a href="#prod-pendulo" onclick="toggleMobileMenu()" class="block px-3 py-2 text-base text-[#475569] hover:text-[#1E293B]">Plataforma Pêndulo</a>
+                        <a href="#prod-puleiro" onclick="toggleMobileMenu()" class="block px-3 py-2 text-base text-[#475569] hover:text-[#1E293B]">Balança Puleiro</a>
+                        <a href="#prod-silos" onclick="toggleMobileMenu()" class="block px-3 py-2 text-base text-[#475569] hover:text-[#1E293B]">Balanças para Silos</a>
+                        <a href="#prod-fluxometro" onclick="toggleMobileMenu()" class="block px-3 py-2 text-base text-[#475569] hover:text-[#1E293B]">Fluxômetro Digital</a>
                     </div>
                 </div>
 
-                <a href="#contato" onclick="toggleMobileMenu()" class="bg-gradient-brand text-white block text-center px-4 py-3 rounded-full text-base font-bold mt-4 shadow-md">Fale Conosco</a>
+                <a href="#contato" onclick="toggleMobileMenu()" class="bg-gradient-brand text-white block text-center px-4 py-4 rounded-full text-lg font-bold mt-6 shadow-md">Fale Conosco</a>
             </div>
         </div>
     </nav>
 
-    <!-- HERO SECTION (Imagem Escura com Texto Claro + Logo Legível) -->
+    <!-- HERO SECTION -->
     <section class="relative min-h-screen flex items-center overflow-hidden" id="home">
 
-        <!-- Fundo de Imagem Noturna (Travada e cobrindo toda a área) -->
-        <div class="absolute inset-0 z-0 overflow-hidden bg-[#060a12]">
-            <img src="Images/fundoHome.png" alt="Fazenda Inteligente NexFarm" class="w-full h-full object-cover object-right animate-hero-pan">
+        <!-- Fundo de Imagem (CARROSSEL AGRITECH) -->
+        <div class="absolute inset-0 z-0 overflow-hidden bg-[#060a12]" id="hero-carousel">
+            <!-- Imagem 1: Suinocultura/Fazenda Moderna -->
+            <img src="https://images.unsplash.com/photo-1516467508483-a7212febe31a?q=80&w=2073&auto=format&fit=crop" alt="Fazenda Inteligente" class="carousel-img absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 opacity-100 animate-hero-pan">
+            <!-- Imagem 2: Galpão/Estrutura Agrícola -->
+            <img src="https://images.unsplash.com/photo-1586771107445-d3af9e1eeb09?q=80&w=2072&auto=format&fit=crop" alt="Agro Tech" class="carousel-img absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 opacity-0 animate-hero-pan" style="animation-delay: -5s;">
+            <!-- Imagem 3: Tecnologia no Campo -->
+            <img src="https://images.unsplash.com/photo-1592982537447-6f296d053073?q=80&w=2070&auto=format&fit=crop" alt="Tecnologia no Campo" class="carousel-img absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 opacity-0 animate-hero-pan" style="animation-delay: -10s;">
         </div>
 
-        <!-- Gradientes para garantir a leitura na esquerda -->
+        <!-- Gradientes para garantir a leitura na esquerda (Ajustado no Mobile para clarear o topo) -->
         <div class="absolute inset-0 bg-gradient-to-r from-[#03060D] via-[#0B1120]/90 to-transparent z-0 pointer-events-none hidden lg:block w-[75%]"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-[#0B1120]/95 via-[#0B1120]/80 to-[#0B1120]/60 z-0 pointer-events-none lg:hidden"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0B1120] via-[#0B1120]/80 to-[#0B1120]/20 z-0 pointer-events-none lg:hidden"></div>
 
-        <div class="w-full max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-12 xl:px-24 relative z-10 pt-32 pb-16 lg:pt-20 lg:pb-24">
+        <div class="w-full max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-12 xl:px-24 relative z-10 pt-32 pb-16 lg:pt-20 lg:pb-24 flex flex-col justify-center min-h-screen">
             <!-- Bloco Esquerdo Totalmente à Margem -->
-            <div class="w-full lg:w-[45%] flex flex-col items-start text-left mt-8 lg:mt-0 reveal-up">
+            <div class="w-full lg:w-[45%] flex flex-col items-start text-left mt-10 lg:mt-0 reveal-up">
 
-                <!-- Logo com Fundo Branco (Destacada da imagem noturna) -->
-                <div class="bg-white/95 backdrop-blur-md px-6 py-4 rounded-[1.5rem] shadow-2xl mb-10 flex items-center justify-center transform transition-transform hover:scale-105 border border-white/20">
-                    <img src="Images/logo_transparente.png" alt="NexFarm Logo" class="h-16 sm:h-24 w-auto object-contain">
+                <!-- Logo com Fundo Branco (Tamanho ajustado p/ mobile não roubar a tela) -->
+                <div class="bg-white/95 backdrop-blur-md px-4 py-3 sm:px-6 sm:py-4 rounded-[1.5rem] shadow-2xl mb-8 flex items-center justify-center transform transition-transform hover:scale-105 border border-white/20 w-max max-w-full">
+                    <img src="Images/logo_transparente.png" alt="NexFarm Logo" class="h-12 min-[400px]:h-14 sm:h-20 lg:h-24 w-auto object-contain">
                 </div>
 
                 <!-- Badge Interativo -->
@@ -360,13 +365,13 @@
                     </div>
                 </div>
 
-                <!-- Título (Foco Avicultura e Suinocultura com ajuste de tamanho para caber perfeitamente) -->
-                <h1 class="text-3xl min-[400px]:text-4xl sm:text-5xl md:text-6xl lg:text-[3.8rem] font-black text-white leading-[1.1] mb-6 tracking-tight drop-shadow-2xl">
+                <!-- Título (Tamanhos ajustados dinamicamente para não quebrar a palavra SUINOCULTURA) -->
+                <h1 class="text-[2rem] min-[400px]:text-4xl sm:text-5xl md:text-6xl lg:text-[3.8rem] font-black text-white leading-[1.1] mb-6 tracking-tight drop-shadow-2xl">
                     INTELIGÊNCIA PARA <br>
                     AVICULTURA E <span class="text-gradient">SUINOCULTURA</span>
                 </h1>
 
-                <p class="mt-2 sm:mt-4 text-base min-[400px]:text-lg sm:text-xl text-gray-300 max-w-lg font-medium leading-relaxed mb-10">
+                <p class="mt-2 sm:mt-4 text-sm min-[400px]:text-base sm:text-xl text-gray-300 max-w-lg font-medium leading-relaxed mb-10">
                     Revolucione sua granja com dados de precisão em tempo real. Soluções completas de Hardware, Web, App e Cloud.
                 </p>
 
@@ -379,8 +384,8 @@
                     </a>
                 </div>
 
-                <!-- Linha de Features Finais (Ajustado para cima e responsivo) -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-6 mt-10 pt-8 border-t border-white/10 w-full max-w-xl">
+                <!-- Linha de Features Finais (Organizado em grid 2x2 no celular para não espremer) -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-6 mt-12 pt-8 border-t border-white/10 w-full max-w-xl">
                     <div class="flex flex-col items-start group cursor-default">
                         <i class="fas fa-signal text-nexGreen text-xl sm:text-xl mb-3 group-hover:scale-110 transition-transform"></i>
                         <span class="text-[10px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-tight group-hover:text-white transition-colors">Conectividade<br>Total</span>
@@ -400,6 +405,12 @@
                 </div>
 
             </div>
+        </div>
+
+        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 animate-bounce z-10 reveal-up hidden sm:block" style="transition-delay: 400ms;">
+            <a href="#tecnologia" class="text-white hover:text-nexBlue transition-colors">
+                <i class="fas fa-chevron-down text-2xl drop-shadow-lg"></i>
+            </a>
         </div>
     </section>
 
@@ -565,7 +576,6 @@
                         <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-nexBlue bg-white border border-nexBlue/20 shadow-sm mb-4">Portátil</span>
                         <h3 class="text-3xl sm:text-4xl font-black text-[#1E293B] mb-2">Balanças para Leitões</h3>
                         <h4 class="text-lg font-bold text-nexBlue mb-6">Manejo Prático e Leve</h4>
-                        <!-- Ajuste de texto solicitado: Remoção de creche/aleitamento -->
                         <p class="text-[#475569] font-medium text-base leading-relaxed mb-6">Solução portátil desenvolvida especificamente para as fases iniciais. Facilidade extrema de operação por um único funcionário e higienização simplificada no ambiente da granja.</p>
                         <ul class="space-y-2 mb-8 font-semibold text-[#1E293B]">
                             <li class="flex items-center text-sm"><i class="fas fa-check text-nexBlue mr-3 text-lg"></i>Design Ergonômico</li>
@@ -679,8 +689,8 @@
                     <div class="flex space-x-4">
                         <a href="https://www.instagram.com/nexfarm_oficial/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-nexGreen hover:text-white hover:border-transparent transition-all" title="Siga nosso Instagram"><i class="fab fa-instagram"></i></a>
                         <!-- E-mail fixado conforme solicitado -->
-                        <a href="mailto:atendimento@nexfarm.com.br" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-nexBlue hover:text-white hover:border-transparent transition-all" title="Envie um e-mail"><i class="fa-regular fa-envelope"></i></a>
-                        <a href="https://wa.me/5554900000000" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gradient-brand hover:text-white hover:border-transparent transition-all" title="Fale pelo WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="mailto:atendimento@nexfarm.ind.br" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-nexBlue hover:text-white hover:border-transparent transition-all" title="Envie um e-mail"><i class="fa-regular fa-envelope"></i></a>
+                        <a href="https://wa.me/5554991739188" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gradient-brand hover:text-white hover:border-transparent transition-all" title="Fale pelo WhatsApp"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
 
@@ -703,14 +713,15 @@
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-envelope mr-3 text-nexGreen text-lg"></i>
-                            <a href="mailto:atendimento@nexfarm.com.br" class="hover:text-nexBlue transition-colors">atendimento@nexfarm.com.br</a>
+                            <a href="mailto:atendimento@nexfarm.ind.br" class="hover:text-nexBlue transition-colors">atendimento@nexfarm.ind.br</a>
                         </li>
                     </ul>
                 </div>
             </div>
 
             <div class="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 font-medium">
-                <p>&copy; 2026 NexFarm Connected Livestock Solutions | Todos os direitos reservados.</p>
+                <p>&copy; 2026 NexFarm Connected Livestock Solutions <br /> Todos os direitos reservados.</p>
+                <br />
                 <p class="mt-2 md:mt-0">Desenvolvido por <strong class="text-gray-800">J. Caetano</strong></p>
             </div>
         </div>
@@ -736,6 +747,27 @@
             }, { rootMargin: '0px 0px -50px 0px', threshold: 0.1 });
 
             elements.forEach(el => observer.observe(el));
+        };
+
+        // Lógica do Carrossel de Fundo (Hero Section)
+        const initHeroCarousel = () => {
+            const images = document.querySelectorAll('.carousel-img');
+            if (images.length === 0) return;
+
+            let currentIndex = 0;
+
+            setInterval(() => {
+                // Esconde a atual
+                images[currentIndex].classList.remove('opacity-100');
+                images[currentIndex].classList.add('opacity-0');
+
+                // Próxima imagem
+                currentIndex = (currentIndex + 1) % images.length;
+
+                // Mostra a próxima
+                images[currentIndex].classList.remove('opacity-0');
+                images[currentIndex].classList.add('opacity-100');
+            }, 5000); // Alterna a cada 5 segundos
         };
 
         // High Performance 2.5D Parallax Engine (Lerp)
@@ -825,6 +857,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             initScrollReveal();
             initProductParallax();
+            initHeroCarousel(); // Inicia o carrossel de imagens do topo
         });
     </script>
 </body>
